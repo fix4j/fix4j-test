@@ -1,0 +1,13 @@
+00001   DONE When a plain old assertion error occurs in a test, would be good to see the other "reportables" showing their details.  Could probably use a @RunWith annotation to pick up on AssertionErrors
+00002   DONE TEST THIS: Be able to configure test settings at the start of a test method, or at the start of a test class, or at the start of a JUnit run??.
+00003   DONE Consts (applicationProperties) to print out all it's values, and where they are sourced from.
+00004   DONE Rename Consts to "Configuration" or "ApplicationProperties" or something.
+00005   DONE Add a ApplicationPropertiesSource interface.  Implement it for env variables, system variables, defaults, testMethodSettings, testClassSettings, testRunSettings, etc.
+00006   DONE ??? Make MatchFailureTextFactory replaceable.
+00007   Look at http://java-performance.info/fix-message-processing-writing-a-fix-parser/
+00008   DONE Get rid of all System.out's
+00009   Finish mavenenization
+00010   Make all tests consistent, i.e. consistently spock or junit
+00011   DONE Package restructure/organization
+00012   Test coverage
+00013   Finish VariousMessageRepresentationsTest
