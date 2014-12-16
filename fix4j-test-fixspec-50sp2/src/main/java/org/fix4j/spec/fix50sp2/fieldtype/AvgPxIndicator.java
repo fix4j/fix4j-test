@@ -22,7 +22,7 @@ public class AvgPxIndicator extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field LAST_TRADE_IS_THE_AVERAGE_PRICE_GROUP_IDENTIFIED_BY_THE_TRADELIN = new Field(AvgPxIndicator.INSTANCE, Values.LAST_TRADE_IS_THE_AVERAGE_PRICE_GROUP_IDENTIFIED_BY_THE_TRADELIN.getOrdinal());

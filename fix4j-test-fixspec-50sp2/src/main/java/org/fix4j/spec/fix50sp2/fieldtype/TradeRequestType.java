@@ -22,7 +22,7 @@ public class TradeRequestType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field UNREPORTED_TRADES_THAT_MATCH_CRITERIA = new Field(TradeRequestType.INSTANCE, Values.UNREPORTED_TRADES_THAT_MATCH_CRITERIA.getOrdinal());

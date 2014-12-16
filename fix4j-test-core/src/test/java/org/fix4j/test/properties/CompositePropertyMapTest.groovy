@@ -20,10 +20,10 @@ class CompositePropertyMapTest extends Specification {
 
         expect:
         assert map.toString() ==
-                "one=blah1 [firstSource]\n" +
-                "two=blah2 [firstSource]\n" +
-                "three=dog3 [secondSource]\n" +
-                "four=cat4 [thirdSource]\n";
+                "    one=blah1 [firstSource]\n" +
+                "    two=blah2 [firstSource]\n" +
+                "    three=dog3 [secondSource]\n" +
+                "    four=cat4 [thirdSource]\n";
     }
 
     def "test Composite behaviour"() {

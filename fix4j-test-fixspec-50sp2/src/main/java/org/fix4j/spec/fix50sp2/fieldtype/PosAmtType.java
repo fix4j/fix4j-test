@@ -22,7 +22,7 @@ public class PosAmtType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field INCREMENTAL_MARKTOMARKET_AMOUNT = new Field(PosAmtType.INSTANCE, Values.INCREMENTAL_MARKTOMARKET_AMOUNT.getOrdinal());

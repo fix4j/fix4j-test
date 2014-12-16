@@ -22,7 +22,7 @@ public class TradeAllocIndicator extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field ALLOCATION_GIVEUP_EXECUTOR = new Field(TradeAllocIndicator.INSTANCE, Values.ALLOCATION_GIVEUP_EXECUTOR.getOrdinal());

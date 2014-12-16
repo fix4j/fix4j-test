@@ -50,7 +50,7 @@ public class FieldTypeCreator {
 
         //Values factory
         if(!field.enumValues.isEmpty()) {
-            sb.append("    public static FieldFactory withValue = new FieldFactory();\n\n");
+            sb.append("    public static FieldFactory withValue(){ return new FieldFactory(); }\n\n");
             sb.append("    public static class FieldFactory{\n");
             def enumIt = field.enumValues.iterator();
             while (enumIt.hasNext()) {

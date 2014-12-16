@@ -22,7 +22,7 @@ public class UnsolicitedIndicator extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field MESSAGE_IS_BEING_SENT_AS_A_RESULT_OF_A_PRIOR_REQUEST = new Field(UnsolicitedIndicator.INSTANCE, Values.MESSAGE_IS_BEING_SENT_AS_A_RESULT_OF_A_PRIOR_REQUEST.getOrdinal());

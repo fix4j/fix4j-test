@@ -22,7 +22,7 @@ public class StandInstDbType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field A_GLOBAL_CUSTODIAN_STANDINSTDBNAME_70_MUST_BE_PROVIDED = new Field(StandInstDbType.INSTANCE, Values.A_GLOBAL_CUSTODIAN_STANDINSTDBNAME_70_MUST_BE_PROVIDED.getOrdinal());

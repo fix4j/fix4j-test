@@ -118,8 +118,8 @@ public class StringUtils {
         return sb.toString();
     }
 
-    public static Map<String, String> prefixAllKeysWith(final String prefix, final Map<String, String> map) {
-        final Map<String, String> returnMap = new LinkedHashMap<>();
+    public static <V> Map<String, V> prefixAllKeysWith(final String prefix, final Map<String, V> map) {
+        final Map<String, V> returnMap = new LinkedHashMap<>();
         for (final String key : map.keySet()) {
             returnMap.put(prefix + key, map.get(key));
         }

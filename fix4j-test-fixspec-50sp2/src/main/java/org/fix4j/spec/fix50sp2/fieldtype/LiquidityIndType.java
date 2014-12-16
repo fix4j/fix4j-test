@@ -22,7 +22,7 @@ public class LiquidityIndType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field NORMAL_MARKET_SIZE = new Field(LiquidityIndType.INSTANCE, Values.NORMAL_MARKET_SIZE.getOrdinal());

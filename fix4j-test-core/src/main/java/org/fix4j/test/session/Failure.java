@@ -16,12 +16,12 @@ public class Failure extends AssertionError {
     private final FixMessage fixMessage;
 
     public Failure(final Report report, final FixMessage fixMessage) {
-        super(report.getReportAsString() + fixMessage.toDelimitedMessageWithAnnotations());
+        super(report.getReportAsString() + fixMessage.toDelimitedMessageWithDescriptors() + Consts.EOL);
         this.fixMessage = fixMessage;
     }
 
     public Failure(final FixMessage fixMessage, final Throwable cause) {
-        super("Exception when processing messsage: " + fixMessage.toDelimitedMessageWithAnnotations(), cause);
+        super("Exception when processing messsage: " + fixMessage.toDelimitedMessageWithDescriptors() + Consts.EOL, cause);
         this.fixMessage = fixMessage;
     }
 

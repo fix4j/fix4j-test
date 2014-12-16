@@ -22,7 +22,7 @@ public class SymbolSfx extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field EUCP_WITH_LUMPSUM_INTEREST_RATHER_THAN_DISCOUNT_PRICE = new Field(SymbolSfx.INSTANCE, Values.EUCP_WITH_LUMPSUM_INTEREST_RATHER_THAN_DISCOUNT_PRICE.getOrdinal());

@@ -22,7 +22,7 @@ public class ResponseTransportType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field OUT_OF_BAND__PREARRANGED_OUTOFBAND_DELIVERY_MECHANIZM_IE_FTP_HTT = new Field(ResponseTransportType.INSTANCE, Values.OUT_OF_BAND__PREARRANGED_OUTOFBAND_DELIVERY_MECHANIZM_IE_FTP_HTT.getOrdinal());

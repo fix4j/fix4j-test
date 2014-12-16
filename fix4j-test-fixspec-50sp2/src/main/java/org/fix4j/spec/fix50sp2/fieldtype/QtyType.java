@@ -22,7 +22,7 @@ public class QtyType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field UNITS_OF_MEASURE_PER_TIME_UNIT_IF_USED__MUST_SPECIFY_UNITOFMEASU = new Field(QtyType.INSTANCE, Values.UNITS_OF_MEASURE_PER_TIME_UNIT_IF_USED__MUST_SPECIFY_UNITOFMEASU.getOrdinal());

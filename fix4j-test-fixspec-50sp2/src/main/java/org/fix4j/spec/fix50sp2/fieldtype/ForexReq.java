@@ -22,7 +22,7 @@ public class ForexReq extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field DO_NOT_EXECUTE_FOREX_AFTER_SECURITY_TRADE = new Field(ForexReq.INSTANCE, Values.DO_NOT_EXECUTE_FOREX_AFTER_SECURITY_TRADE.getOrdinal());

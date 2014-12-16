@@ -22,7 +22,7 @@ public class ProgRptReqs extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field REALTIME_EXECUTION_REPORTS_TO_BE_DISCOURAGE = new Field(ProgRptReqs.INSTANCE, Values.REALTIME_EXECUTION_REPORTS_TO_BE_DISCOURAGE.getOrdinal());

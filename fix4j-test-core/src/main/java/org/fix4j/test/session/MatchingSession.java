@@ -64,7 +64,7 @@ public class MatchingSession implements TestClientSession {
         }
     }
 
-    public FixMessage discardUntilMsgTypeReceived(final MsgType msgType) throws InterruptedException {
+    public FixMessage discardUntilMsgTypeReceived(final MsgType msgType) {
         try {
             return inboundSession.discardUntilTypeOfMessageReceived(msgType).getMessage();
         } catch (final Failure failure) {
@@ -72,7 +72,7 @@ public class MatchingSession implements TestClientSession {
         }
     }
 
-    public FixMessage discardUntilExpected(final MsgType msgType, final String fixExpression) throws InterruptedException {
+    public FixMessage discardUntilExpected(final MsgType msgType, final String fixExpression) {
         try {
             return inboundSession.discardUntilTypeOfMsgReceived(msgType, fixExpression).getMessage();
         } catch (final Failure failure) {

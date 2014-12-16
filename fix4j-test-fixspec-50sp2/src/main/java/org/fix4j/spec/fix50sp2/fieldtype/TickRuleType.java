@@ -22,7 +22,7 @@ public class TickRuleType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field TRADED_AS_A_SPREAD_LEG = new Field(TickRuleType.INSTANCE, Values.TRADED_AS_A_SPREAD_LEG.getOrdinal());

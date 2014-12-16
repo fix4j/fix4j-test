@@ -18,8 +18,8 @@ public class PrettyStripper {
         //Strip space from start of string
         str = str.replaceAll("(?m)^\\s+", "");
 
-        //Strip space from end of string
-        str = str.replaceAll("(?m)\\s+$", "");
+        //Strip space from end of string (not including carriage returns)
+        str = str.replaceAll("(?m)[\\t ]+$", "");
 
         //Strip group repeat prefixes (lines starting with digits then a dot
         str = str.replaceAll("(?m)^\\d+\\.\\s*", "");

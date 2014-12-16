@@ -22,7 +22,7 @@ public class OwnershipType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field TENANTS_IN_COMMON = new Field(OwnershipType.INSTANCE, Values.TENANTS_IN_COMMON.getOrdinal());

@@ -22,7 +22,7 @@ public class LegSwapType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field MODIFIED_DURATION = new Field(LegSwapType.INSTANCE, Values.MODIFIED_DURATION.getOrdinal());

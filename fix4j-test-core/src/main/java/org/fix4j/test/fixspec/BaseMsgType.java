@@ -78,6 +78,11 @@ public class BaseMsgType implements MsgType {
     }
 
     @Override
+    public List<Integer> getFieldOrder() {
+        return fieldAndGroupTypes.getFieldOrder();
+    }
+
+    @Override
     public FixMessage generateExampleMessage(final FixSpecification fixSpecification) {
         return (new MessageExampleGenerator()).generateExampleMessage(fixSpecification, this);
     }

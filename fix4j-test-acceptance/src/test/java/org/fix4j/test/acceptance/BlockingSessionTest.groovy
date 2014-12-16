@@ -3,29 +3,25 @@ package org.fix4j.test.acceptance;
 import org.fix4j.spec.fix50sp2.MsgTypes;
 import org.fix4j.test.DefaultContextFactory;
 import org.fix4j.test.fixmodel.FixMessage;
-import org.fix4j.test.plumbing.Consumer;
-import org.fix4j.test.session.ConsumerSession;
+import org.fix4j.test.session.BlockingSession;
 import org.fix4j.test.session.FixConnectionMode;
 import org.fix4j.test.session.FixSessionId;
 import org.fix4j.test.session.TestSessionHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.Test
+import spock.lang.Specification;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * User: ben
  * Date: 13/08/2014
  * Time: 8:57 PM
  */
-public class ConsumerSessionTest {
-    private static ConsumerSession server;
-    private static ConsumerSession client;
-    private static TestConsumer clientConsumer;
-    private static TestConsumer serverConsumer;
-
+public class BlockingSessionTest extends Specification {
+    private static BlockingSession server;
+    private static BlockingSession client;
 
     final String MARKET_DATA_REQUEST =
             "[MsgType]35=V[MARKETDATAREQUEST]|" +
@@ -52,55 +48,38 @@ public class ConsumerSessionTest {
             "[Side]54=1[BUY]|" +
             "[HandlInst]21=2[AUTOMATED_EXECUTION_ORDER_PUBLIC_BROKER_INTERVENTION_OK]|";
 
-
-    private static class TestConsumer implements Consumer<FixMessage>{
-        public FixMessage receivedMsg;
-
-        @Override
-        public void accept(final FixMessage fixMessage) {
-            this.receivedMsg = fixMessage;
-        }
-    };
-
-
-    @BeforeClass
-    public static void setup() throws InterruptedException {
+    public void setupSpec() throws InterruptedException {
         final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory());
-
-        clientConsumer = new TestConsumer();
-        serverConsumer = new TestConsumer();
-
-        client = helper.createConsumerSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR, clientConsumer);
-        server = helper.createConsumerSession(new FixSessionId("FIX.4.4", "SERVER_COMP_ID", "CLIENT_COMP_ID"), FixConnectionMode.ACCEPTOR, serverConsumer);
+        server = helper.createBlockingSession(new FixSessionId("FIX.4.4", "SERVER_COMP_ID", "CLIENT_COMP_ID"), FixConnectionMode.ACCEPTOR);
+        client = helper.createBlockingSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR);
 
         //Consume up the logon messages
-        while(clientConsumer.receivedMsg == null || !clientConsumer.receivedMsg.isOfType(MsgTypes.Logon)) Thread.sleep(100);
-        while(serverConsumer.receivedMsg == null || !serverConsumer.receivedMsg.isOfType(MsgTypes.Logon)) Thread.sleep(100);
-
-        //Wipe them out
-        clientConsumer.receivedMsg = null;
-        new TestConsumer().receivedMsg = null;
+        while(!client.getNextMessage().getTypeOfMessage().equals(MsgTypes.Logon));
+        while(!server.getNextMessage().getTypeOfMessage().equals(MsgTypes.Logon));
     }
 
-    @AfterClass
-    public static void teardown() throws InterruptedException {
+    public void cleanupSpec() throws InterruptedException {
         client.shutdown();
         server.shutdown();
     }
 
     @Test
     public void testClientSendsServerMessage() throws InterruptedException {
+        when:
         client.send(MARKET_DATA_REQUEST);
-        Thread.sleep(1000);
-        assertNotNull(serverConsumer.receivedMsg);
-        assertEquals(MsgTypes.MarketDataRequest, serverConsumer.receivedMsg.getTypeOfMessage());
+        final FixMessage msg = server.getNextMessage();
+
+        then:
+        assertEquals(MsgTypes.MarketDataRequest, msg.getTypeOfMessage());
     }
 
     @Test
     public void testServerSendsClientMessage() throws InterruptedException {
+        when:
         server.send(NEW_ORDER_SINGLE);
-        Thread.sleep(1000);
-        assertNotNull(clientConsumer.receivedMsg);
-        assertEquals(MsgTypes.NewOrderSingle, clientConsumer.receivedMsg.getTypeOfMessage());
+        final FixMessage msg = client.getNextMessage();
+
+        then:
+        assertEquals(MsgTypes.NewOrderSingle, msg.getTypeOfMessage());
     }
 }

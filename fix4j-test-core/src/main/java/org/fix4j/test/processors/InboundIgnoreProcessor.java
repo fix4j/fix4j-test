@@ -22,7 +22,7 @@ public class InboundIgnoreProcessor implements Processor<FixMessage> {
     @Override
     public FixMessage process(final FixMessage message) {
         if(messagesToIgnore.getMatchResult(message).matches()){
-            LOGGER.info("Ignoring: " + message.toDelimitedMessageWithAnnotations());
+            LOGGER.info("Ignoring: " + message.toDelimitedMessageWithDescriptors());
             return null;
         }
         return message;

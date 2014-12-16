@@ -22,7 +22,7 @@ public class SettlInstMode extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field SPECIFIC_ALLOCATION_ACCOUNT_STANDING_REPLACED = new Field(SettlInstMode.INSTANCE, Values.SPECIFIC_ALLOCATION_ACCOUNT_STANDING_REPLACED.getOrdinal());

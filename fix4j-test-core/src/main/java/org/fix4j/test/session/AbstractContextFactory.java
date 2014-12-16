@@ -55,6 +55,7 @@ public abstract class AbstractContextFactory implements ContextFactory {
     @Override
     public TestContext createTestContext(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode) {
         final ApplicationProperties properties = createApplicationProperties();
+        LOGGER.info(properties.toString());
         final FixEngineSessionFactory fixEngineSessionFactory = createFixEngineSessionFactory(fixSpecification, properties);
         final BlockingPipe<FixMessage> inboundBlockingPipe = new BlockingPipe<>("fromThirdPartyFixEngine");
         final FixEngineSession fixEngineSession = fixEngineSessionFactory.createSession(fixSessionId, fixConnectionMode, inboundBlockingPipe);
@@ -73,9 +74,9 @@ public abstract class AbstractContextFactory implements ContextFactory {
     protected ApplicationProperties createApplicationProperties() {
         return CompositePropertyMap.Builder.create("ALL")
                 .addLast(testRunProperties)
-                .addLast(PropertyKeysAndDefaultValues.getDefaultProperties())
                 .addLast(new SystemPropertySource())
                 .addLast(new SystemEnvVariablePropertySource())
+                .addLast(PropertyKeysAndDefaultValues.getDefaultProperties())
                 .build();
     }
 

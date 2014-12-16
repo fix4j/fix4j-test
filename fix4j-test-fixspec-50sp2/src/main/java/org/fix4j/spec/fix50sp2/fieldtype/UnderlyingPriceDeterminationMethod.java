@@ -22,7 +22,7 @@ public class UnderlyingPriceDeterminationMethod extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field OPTIMAL_VALUE_LOOKBACK = new Field(UnderlyingPriceDeterminationMethod.INSTANCE, Values.OPTIMAL_VALUE_LOOKBACK.getOrdinal());

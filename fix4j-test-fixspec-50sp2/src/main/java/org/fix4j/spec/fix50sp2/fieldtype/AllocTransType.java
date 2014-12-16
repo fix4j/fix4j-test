@@ -22,7 +22,7 @@ public class AllocTransType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field PRELIMINARY_WITHOUT_MISCFEES_AND_NETMONEY_REMOVEDREPLACED = new Field(AllocTransType.INSTANCE, Values.PRELIMINARY_WITHOUT_MISCFEES_AND_NETMONEY_REMOVEDREPLACED.getOrdinal());

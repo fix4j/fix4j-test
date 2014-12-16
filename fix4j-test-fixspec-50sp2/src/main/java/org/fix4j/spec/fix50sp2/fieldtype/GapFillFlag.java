@@ -22,7 +22,7 @@ public class GapFillFlag extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field SEQUENCE_RESET_IGNORE_MSG_SEQ_NUM_NA_FOR_FIXML__NOT_USED = new Field(GapFillFlag.INSTANCE, Values.SEQUENCE_RESET_IGNORE_MSG_SEQ_NUM_NA_FOR_FIXML__NOT_USED.getOrdinal());

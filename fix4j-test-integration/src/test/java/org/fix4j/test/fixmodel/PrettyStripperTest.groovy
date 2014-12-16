@@ -24,7 +24,7 @@ class PrettyStripperTest extends Specification {
                 "       Second repeat field 2\n";
 
         expect:
-        PrettyStripper.stripPrettiness(prettyMessage) == "First repeat field 1|First repeat field 2|Second repeat field 1|Second repeat field 2";
+        PrettyStripper.stripPrettiness(prettyMessage) == "First repeat field 1|First repeat field 2|Second repeat field 1|Second repeat field 2|";
     }
 
     def "test strip spaces from start and end of string"(){

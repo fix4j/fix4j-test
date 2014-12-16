@@ -22,7 +22,7 @@ public class AggregatedBook extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field BOOK_ENTRIES_SHOULD_NOT_BE_AGGREGATED = new Field(AggregatedBook.INSTANCE, Values.BOOK_ENTRIES_SHOULD_NOT_BE_AGGREGATED.getOrdinal());

@@ -1,5 +1,6 @@
 package org.fix4j.test.fixmodel
 
+import org.fix4j.spec.fix50sp2.fieldtype.StatsType
 import org.fix4j.test.expression.MessageExpressionParser
 import org.fix4j.spec.fix50sp2.FixSpec
 import spock.lang.Specification
@@ -198,6 +199,50 @@ class BaseFixMessageBuilderTest extends Specification {
                     "[Symbol]55=AUD/USD|" +
                     "[Symbol]55=USD/JPY|";
 
-        assert fixMessage.toDelimitedMessageWithAnnotations() == expectedOutput;
+        assert fixMessage.toDelimitedMessageWithDescriptors() == expectedOutput;
+    }
+
+
+
+    def "test with two levels of repeats"() {
+        given:
+        final BaseFixMessageBuilder builder = new BaseFixMessageBuilder(FixSpec.INSTANCE);
+        final MessageExpressionParser parser = new MessageExpressionParser(FixSpec.INSTANCE);
+
+        String messageStr =
+                "    [MsgType]35=X[MARKETDATAINCREMENTALREFRESH]\n" +
+                "    [MDReqID]262=request123\n" +
+                "    [NoMDEntries]268=4\n" +
+                "      1.[MDUpdateAction]279=0[NEW]\n" +
+                "        [MDEntryType]269=0[BID]\n" +
+                "        [Symbol]55=AUD/USD\n" +
+                "        [MDEntryPx]270=1.12345\n" +
+                "        [NoPartyIDs]453=2\n" +
+                "          1.[PartyID]448=MrMaker\n" +
+                "            [PartyRole]452=66[MARKET_MAKER]\n" +
+                "          2.[PartyID]448=Exchange\n" +
+                "            [PartyRole]452=22[EXCHANGE]\n" +
+                "        [NoStatsIndicators]1175=1\n" +
+                "          1.[StatsType]1176=EXCHANGE_LAST\n" +
+                "      2.[MDUpdateAction]279=0[NEW]\n" +
+                "        [MDEntryType]269=1[OFFER]\n" +
+                "        [Symbol]55=AUD/USD\n" +
+                "        [MDEntryPx]270=1.12355\n" +
+                "        [NoPartyIDs]453=2\n" +
+                "          1.[PartyID]448=MrMaker\n" +
+                "            [PartyRole]452=66[MARKET_MAKER]\n" +
+                "          2.[PartyID]448=Exchange\n" +
+                "            [PartyRole]452=22[EXCHANGE]\n" +
+                "        [NoStatsIndicators]1175=1\n" +
+                "          1.[StatsType]1176=EXCHANGE_LAST\n";
+
+        when:
+        final Collection<Field> fields = parser.parse(messageStr).toFields();
+        builder.withFields(fields);
+
+        then:
+        final FixMessage fixMessage = builder.build();
+        println fixMessage.toPrettyString();
+        assert fixMessage.toDelimitedMessageWithDescriptors() == PrettyStripper.stripPrettiness(messageStr);
     }
 }

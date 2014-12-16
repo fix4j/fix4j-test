@@ -5,6 +5,7 @@ import org.fix4j.test.fixmodel.Field;
 import org.fix4j.test.fixmodel.FixMessage;
 import org.fix4j.test.fixspec.FixSpecification;
 import org.fix4j.test.matching.matchers.FixMessageMatcher;
+import org.fix4j.test.util.Consts;
 
 /**
  * User: ben
@@ -44,15 +45,17 @@ public class SessionLevelRejectMessageFlagRule implements MessageFlagRule {
         }
 
         String message = "Session level reject::";
-        message += (sessionRejectReason != null ? sessionRejectReason.toStringWithAnnotations() + "::": "");
-        message += (text != null ? text.toStringWithAnnotations(): "");
+        message += (sessionRejectReason != null ? sessionRejectReason.toStringWithDescriptors() + "::": "");
+        message += (text != null ? text.toStringWithDescriptors(): "");
         if(refTagId != null){
-            message += refTagId.toStringWithAnnotations();
+            message += refTagId.toStringWithDescriptors();
             if(refTagName != null){
                 message += "[" + refTagName + "]";
             }
             message += "::";
         }
+        message += Consts.EOL;
+        message += fixMessage.toPrettyString();
 
         return MessageFlags.singleFlag(fixMessage, message);
     }

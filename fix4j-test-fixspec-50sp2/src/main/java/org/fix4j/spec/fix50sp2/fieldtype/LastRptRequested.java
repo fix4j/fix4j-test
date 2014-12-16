@@ -22,7 +22,7 @@ public class LastRptRequested extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field NOT_LAST_MESSAGE = new Field(LastRptRequested.INSTANCE, Values.NOT_LAST_MESSAGE.getOrdinal());

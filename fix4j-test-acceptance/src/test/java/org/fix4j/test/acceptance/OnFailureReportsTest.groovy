@@ -125,8 +125,8 @@ class OnFailureReportsTest extends Specification {
         LOGGER.info(e.getMessage())
         assertContainsBlockOfText(e.getMessage(),
                     "RECENT OUTBOUND MESSAGES\n" +
-                    "    1. ${marketDataRequest1.toDelimitedMessageWithAnnotations()}\n" +
-                    "    2. ${newOrderSingle1.toDelimitedMessageWithAnnotations()}");
+                    "    1. ${marketDataRequest1.toDelimitedMessageWithDescriptors()}\n" +
+                    "    2. ${newOrderSingle1.toDelimitedMessageWithDescriptors()}");
     }
 
     public void testRecentInboundMessages(){
@@ -149,10 +149,10 @@ class OnFailureReportsTest extends Specification {
         LOGGER.info(f.getMessage())
         assertContainsBlockOfText(f.getMessage(),
                     "RECENT INBOUND MESSAGES\n" +
-                    "    1. ${serverLogon.toDelimitedMessageWithAnnotations()}\n" +
-                    "    2. ${recievedNewOrderSingle1.toDelimitedMessageWithAnnotations()}\n" +
-                    "    3. ${recievedNewOrderSingle2.toDelimitedMessageWithAnnotations()}\n" +
-                    "    4. ${f.getFixMessage().toDelimitedMessageWithAnnotations()}\n");
+                    "    1. ${serverLogon.toDelimitedMessageWithDescriptors()}\n" +
+                    "    2. ${recievedNewOrderSingle1.toDelimitedMessageWithDescriptors()}\n" +
+                    "    3. ${recievedNewOrderSingle2.toDelimitedMessageWithDescriptors()}\n" +
+                    "    4. ${f.getFixMessage().toDelimitedMessageWithDescriptors()}\n");
     }
 
 

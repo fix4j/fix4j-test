@@ -86,7 +86,7 @@ class MessageFlagRuleTest extends Specification {
 
         then:
         assert rule.isTriggered(message);
-        assert rule.getMessageFlags(message).getReportAsString() == message.toDelimitedMessageWithAnnotations() + Consts.EOL + Consts.INDENT + "1.   alert!" + Consts.EOL;
+        assert rule.getMessageFlags(message).getReportAsString() == message.toDelimitedMessageWithDescriptors() + Consts.EOL + Consts.INDENT + "1.   alert!" + Consts.EOL;
     }
 
     def "test ForAnyValueOfField - does NOT match"() {
@@ -109,6 +109,6 @@ class MessageFlagRuleTest extends Specification {
 
         then:
         assert rule.isTriggered(message);
-        assert rule.getMessageFlags(message).getReportAsString() == message.toDelimitedMessageWithAnnotations() + Consts.EOL + Consts.INDENT + "1.   alert 13[TAG_APPEARS_MORE_THAN_ONCE] and Tag appears more than once" + Consts.EOL;
+        assert rule.getMessageFlags(message).getReportAsString() == message.toDelimitedMessageWithDescriptors() + Consts.EOL + Consts.INDENT + "1.   alert 13[TAG_APPEARS_MORE_THAN_ONCE] and Tag appears more than once" + Consts.EOL;
     }
 }

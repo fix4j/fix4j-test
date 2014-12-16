@@ -22,7 +22,7 @@ public class ContAmtType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field NET_SETTLEMENT_AMOUNT = new Field(ContAmtType.INSTANCE, Values.NET_SETTLEMENT_AMOUNT.getOrdinal());

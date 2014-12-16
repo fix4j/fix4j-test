@@ -22,7 +22,7 @@ public class PartyListResponseType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field INCLUDE_RISK_LIMIT_INFORMATION = new Field(PartyListResponseType.INSTANCE, Values.INCLUDE_RISK_LIMIT_INFORMATION.getOrdinal());

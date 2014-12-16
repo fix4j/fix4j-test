@@ -22,7 +22,7 @@ public class NotifyBrokerOfCredit extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field DETAILS_SHOULT_NOT_BE_COMMUNICATED = new Field(NotifyBrokerOfCredit.INSTANCE, Values.DETAILS_SHOULT_NOT_BE_COMMUNICATED.getOrdinal());

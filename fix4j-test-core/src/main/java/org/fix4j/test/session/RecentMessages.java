@@ -45,7 +45,7 @@ public class RecentMessages implements PrettyPrintable {
             }
             while (messages.hasNext()) {
                 final FixMessage fixMessage = messages.next();
-                sb.append(INDENT).append(i++).append(". ").append(fixMessage.toDelimitedMessageWithAnnotations()).append(EOL);
+                sb.append(INDENT).append(i++).append(". ").append(fixMessage.toDelimitedMessageWithDescriptors()).append(EOL);
             }
             return sb.toString();
         } else {

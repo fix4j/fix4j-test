@@ -22,7 +22,7 @@ public class LegalConfirm extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field DOES_NOT_CONSITUTE_A_LEGAL_CONFIRM = new Field(LegalConfirm.INSTANCE, Values.DOES_NOT_CONSITUTE_A_LEGAL_CONFIRM.getOrdinal());

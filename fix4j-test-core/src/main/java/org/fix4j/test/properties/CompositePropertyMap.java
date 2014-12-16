@@ -1,5 +1,7 @@
 package org.fix4j.test.properties;
 
+import org.fix4j.test.util.StringUtils;
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,7 +27,7 @@ public class CompositePropertyMap implements PropertySource, ApplicationProperti
         for (final String key : properties.keySet()) {
             sb.append(key).append("=").append(properties.get(key)).append("\n");
         }
-        return sb.toString();
+        return StringUtils.indentAllLines(sb.toString());
     }
 
     @Override

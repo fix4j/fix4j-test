@@ -1,6 +1,7 @@
 package org.fix4j.test.util;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 
@@ -10,6 +11,14 @@ import java.util.concurrent.Callable;
 * Time: 6:02 PM
 */
 public class Utils {
+    public static int[] toIntArray(List<Integer> list)  {
+        int[] ret = new int[list.size()];
+        int i = 0;
+        for (Integer e : list)
+            ret[i++] = e;
+        return ret;
+    }
+
     public static <V> V executeUntilNonNullOrTimeout(final long timeoutMs, final long timeBetweenPollsMs, final Callable<V> callable) throws InterruptedException {
         final long started = new Date().getTime();
         long elapsedTime = 0;

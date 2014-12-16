@@ -22,7 +22,7 @@ public class TrdSubType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field N_NONPROTECTED_PORTFOLIO_TRANSACTION_OR_A_FULLY_DISCLOSED_PORTFO = new Field(TrdSubType.INSTANCE, Values.N_NONPROTECTED_PORTFOLIO_TRANSACTION_OR_A_FULLY_DISCLOSED_PORTFO.getOrdinal());

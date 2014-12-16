@@ -19,32 +19,19 @@ import java.util.Set;
 public class BaseFieldAndGroupTypes implements FieldAndGroupTypes {
     private final Map<Integer, GroupType> groupTypes;
     private final Map<Integer, MemberFieldType> fieldTypes;
-
-    public BaseFieldAndGroupTypes(final List<MemberFieldType> fieldTypes, final List<GroupType> groupTypes) {
-        final Map<Integer, MemberFieldType> fieldTypeMap = new LinkedHashMap<>(fieldTypes.size());
-        for (final MemberFieldType fieldType : fieldTypes) {
-            fieldTypeMap.put(fieldType.getTag().getValue(), fieldType);
-        }
-
-        final Map<Integer, GroupType> groupTypeMap = new LinkedHashMap<>(groupTypes.size());
-        for (final GroupType groupType : groupTypes) {
-            groupTypeMap.put(groupType.getTag().getValue(), groupType);
-        }
-        
-        this.groupTypes = Collections.unmodifiableMap(groupTypeMap);
-        this.fieldTypes = Collections.unmodifiableMap(fieldTypeMap);
-    }
+    private final List<Integer> fieldOrder;
 
     public BaseFieldAndGroupTypes(final MessageChildType ... childTypes) {
         this(Arrays.asList(childTypes));
     }
 
-
     public BaseFieldAndGroupTypes(final List<MessageChildType> childTypes) {
         final Map<Integer, MemberFieldType> fieldTypeMap = new LinkedHashMap<>();
         final Map<Integer, GroupType> groupTypeMap = new LinkedHashMap<>();
+        final List<Integer> fieldOrder = new ArrayList<>();
 
         for (final MessageChildType childType : childTypes) {
+            fieldOrder.add(childType.getTag().getValue());
             if(childType instanceof MemberFieldType){
                 final MemberFieldType fieldType = (MemberFieldType) childType;
                 fieldTypeMap.put(fieldType.getTag().getValue(), fieldType);
@@ -56,6 +43,7 @@ public class BaseFieldAndGroupTypes implements FieldAndGroupTypes {
             }
         }
 
+        this.fieldOrder = Collections.unmodifiableList(fieldOrder);
         this.groupTypes = Collections.unmodifiableMap(groupTypeMap);
         this.fieldTypes = Collections.unmodifiableMap(fieldTypeMap);
     }
@@ -82,12 +70,18 @@ public class BaseFieldAndGroupTypes implements FieldAndGroupTypes {
 
     @Override
     public boolean containsChild(final FieldType type) {
-        return fieldTypes.containsValue(type);
+        final Integer typeTag = type.getTag().getValue();
+        return fieldTypes.containsKey(typeTag) || groupTypes.containsKey(typeTag);
     }
 
     @Override
     public boolean containsRecursively(final FieldType type) {
         return getAllFieldTypesRecursively().contains(type);
+    }
+
+    @Override
+    public List<Integer> getFieldOrder() {
+        return fieldOrder;
     }
 
     @Override

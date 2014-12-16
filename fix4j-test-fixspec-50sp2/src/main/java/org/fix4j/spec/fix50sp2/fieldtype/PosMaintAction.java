@@ -22,7 +22,7 @@ public class PosMaintAction extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field CANCEL__USED_TO_REMOVE_THE_OVERALL_TRANSACTION_OR_SPECIFIC_ADD_M = new Field(PosMaintAction.INSTANCE, Values.CANCEL__USED_TO_REMOVE_THE_OVERALL_TRANSACTION_OR_SPECIFIC_ADD_M.getOrdinal());

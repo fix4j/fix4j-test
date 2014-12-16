@@ -22,7 +22,7 @@ public class InViewOfCommon extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field HALT_WAS_NOT_RELATED_TO_A_HALT_OF_THE_COMMON_STOCK = new Field(InViewOfCommon.INSTANCE, Values.HALT_WAS_NOT_RELATED_TO_A_HALT_OF_THE_COMMON_STOCK.getOrdinal());

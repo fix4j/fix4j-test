@@ -22,7 +22,7 @@ public class ClearingFeeIndicator extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field EQUITY_MEMBER_AND_CLEARING_MEMBER = new Field(ClearingFeeIndicator.INSTANCE, Values.EQUITY_MEMBER_AND_CLEARING_MEMBER.getOrdinal());

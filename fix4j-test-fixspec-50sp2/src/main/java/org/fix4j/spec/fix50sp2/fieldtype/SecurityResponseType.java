@@ -22,7 +22,7 @@ public class SecurityResponseType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field LIST_OF_SECURITY_TYPES_RETURNED_PER_REQUEST = new Field(SecurityResponseType.INSTANCE, Values.LIST_OF_SECURITY_TYPES_RETURNED_PER_REQUEST.getOrdinal());

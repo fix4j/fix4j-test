@@ -62,8 +62,8 @@ public class BaseGroup implements Group {
     }
 
     @Override
-    public Map<String, String> getFieldReferenceMap() {
-        final Map<String, String> map = new LinkedHashMap<>();
+    public Map<String, Field> getFieldReferenceMap() {
+        final Map<String, Field> map = new LinkedHashMap<>();
         int i=0;
         map.putAll(noOfField.getFieldReferenceMap());
         for (final FieldsAndGroups repeat : repeats) {

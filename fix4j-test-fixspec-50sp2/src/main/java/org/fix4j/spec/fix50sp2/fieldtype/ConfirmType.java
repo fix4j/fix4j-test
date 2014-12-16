@@ -22,7 +22,7 @@ public class ConfirmType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field CONFIRMATION_REQUEST_REJECTED_REASON_CAN_BE_STATED_IN_TEXT_58_FI = new Field(ConfirmType.INSTANCE, Values.CONFIRMATION_REQUEST_REJECTED_REASON_CAN_BE_STATED_IN_TEXT_58_FI.getOrdinal());

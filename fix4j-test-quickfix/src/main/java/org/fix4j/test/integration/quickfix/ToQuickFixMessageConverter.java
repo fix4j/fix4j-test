@@ -1,5 +1,6 @@
 package org.fix4j.test.integration.quickfix;
 
+import org.fix4j.test.fixspec.GroupType;
 import org.fix4j.test.integration.MessageConverter;
 import org.fix4j.test.fixmodel.Field;
 import org.fix4j.test.fixmodel.FieldsAndGroups;
@@ -8,9 +9,12 @@ import org.fix4j.test.fixspec.FieldClass;
 import org.fix4j.test.fixspec.FixSpecification;
 import org.fix4j.test.plumbing.Consumer;
 import org.fix4j.test.util.DateUtils;
+import org.fix4j.test.util.Utils;
 import quickfix.FieldMap;
 import quickfix.Group;
 import quickfix.Message;
+
+import java.util.List;
 
 /**
  * User: ben
@@ -50,7 +54,12 @@ public class ToQuickFixMessageConverter implements MessageConverter<FixMessage, 
 
         for (final org.fix4j.test.fixmodel.Group fixTestGroup : fieldsAndGroups.getGroups()) {
             for (final FieldsAndGroups fixTestGroupRepeat : fixTestGroup.getRepeats()) {
-                final Group group = new Group(fixTestGroup.getType().getNoOfFieldType().getTag().getValue(), fixTestGroup.getType().getFirstChildTypeOfRepeatingGroup().getTag().getValue());
+                final GroupType groupType = fixTestGroup.getType();
+
+                final Group group = new Group(
+                        groupType.getNoOfFieldType().getTag().getValue(),
+                        groupType.getFirstChildTypeOfRepeatingGroup().getTag().getValue(),
+                        Utils.toIntArray(groupType.getFieldOrder()));
                 convertAndPopulateFieldMap(group, fixTestGroupRepeat);
                 fieldMap.addGroup(group);
             }

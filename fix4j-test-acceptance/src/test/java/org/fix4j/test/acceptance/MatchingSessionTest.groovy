@@ -9,7 +9,8 @@ import org.fix4j.test.session.MatchingSession;
 import org.fix4j.test.session.TestSessionHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.Test
+import spock.lang.Specification;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -20,7 +21,7 @@ import static org.junit.Assert.fail;
  * Date: 13/08/2014
  * Time: 8:57 PM
  */
-public class MatchingSessionTest {
+public class MatchingSessionTest extends Specification{
     private static MatchingSession server;
     private static MatchingSession client;
 
@@ -49,8 +50,7 @@ public class MatchingSessionTest {
             "[Side]54=1[BUY]|" +
             "[HandlInst]21=2[AUTOMATED_EXECUTION_ORDER_PUBLIC_BROKER_INTERVENTION_OK]|";
 
-    @BeforeClass
-    public static void setup() throws InterruptedException {
+    public void setupSpec() throws InterruptedException {
         final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory());
         server = helper.createMatchingSession(new FixSessionId("FIX.4.4", "SERVER_COMP_ID", "CLIENT_COMP_ID"), FixConnectionMode.ACCEPTOR);
         client = helper.createMatchingSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR);
@@ -58,8 +58,7 @@ public class MatchingSessionTest {
         server.discardUntilMsgTypeReceived(MsgTypes.Logon);
     }
 
-    @AfterClass
-    public static void teardown() throws InterruptedException {
+    public void cleanupSpec() throws InterruptedException {
         client.shutdown();
         server.shutdown();
     }
@@ -71,36 +70,44 @@ public class MatchingSessionTest {
     TEST OF discardUntilExpected(final MsgType msgType, final String fixExpression)
      */
 
-    @Test
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_passes_fullMsgAsExpression() throws InterruptedException {
+        when:
         client.send(MARKET_DATA_REQUEST);
+
+        then:
         final FixMessage fixMessage = server.discardUntilExpected(MsgTypes.MarketDataRequest, MARKET_DATA_REQUEST);
-        assertEquals(fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest);
+        assert fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest;
     }
 
-    @Test
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_passes_wildcard() throws InterruptedException {
+        when:
         client.send(MARKET_DATA_REQUEST);
         final FixMessage fixMessage = server.discardUntilExpected(MsgTypes.MarketDataRequest, "35=.*");
-        assertEquals(fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest);
+
+        then:
+        assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
     }
 
-    @Test
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_passes_twoRegexes() throws InterruptedException {
+        when:
         client.send(MARKET_DATA_REQUEST);
         final FixMessage fixMessage = server.discardUntilExpected(MsgTypes.MarketDataRequest, "262=AASD[JKG]+79\\d");
-        assertEquals(fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest);
+
+        then:
+        assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
     }
 
-    @Test
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_passes_matchInTwoRepeats() throws InterruptedException {
+        when:
         client.send(MARKET_DATA_REQUEST);
         final FixMessage fixMessage = server.discardUntilExpected(MsgTypes.MarketDataRequest, "55=GBP/USD|55=AUD/USD");
-        assertEquals(fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest);
+
+        then:
+        assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
     }
 
-    @Test
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_fails() throws InterruptedException {
+        expect:
         client.send(MARKET_DATA_REQUEST);
         try{
             server.discardUntilExpected(MsgTypes.MarketDataRequest, "[MsgType]35=D[NEWORDERSINGLE]");
@@ -119,29 +126,35 @@ public class MatchingSessionTest {
     TEST OF discardUntilExpected(final String fixExpression)
      */
 
-    @Test
     public void testMatchOnAFewFields_passes_matchOnAFewFields() throws InterruptedException {
+        when:
         client.send(MARKET_DATA_REQUEST);
         final FixMessage fixMessage = server.discardUntilExpected(
                 "[MsgType]35=V[MARKETDATAREQUEST]|" +
                 "[MDReqID]262=AASDJKG790|" +
                 "[SubscriptionRequestType]263=0[SNAPSHOT]|");
-        assertEquals(fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest);
+
+        then:
+        assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
     }
 
-    @Test
     public void testDiscardUntilMatch_passes_discardingFirstMessage_thenMatchesOnSecond() throws InterruptedException {
+        when:
         client.send(NEW_ORDER_SINGLE);
         client.send(MARKET_DATA_REQUEST);
         final FixMessage fixMessage = server.discardUntilExpected(MARKET_DATA_REQUEST);
-        assertEquals(fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest);
+
+        then:
+        assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
     }
 
-    @Test
     public void testDiscardUntilExpected_passes_matchOnWholeExpression() throws InterruptedException {
+        when:
         client.send(MARKET_DATA_REQUEST);
         final FixMessage fixMessage = server.discardUntilExpected(MARKET_DATA_REQUEST);
-        assertEquals(fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest);
+
+        then:
+        assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
     }
 
 
@@ -152,12 +165,14 @@ public class MatchingSessionTest {
     TEST OF discardUntilMsgTypeReceived(final MsgType msgType)
      */
 
-    @Test
     public void testDiscardUntilMessageTypeReceived_discardingFirstMessage_thenMatches() throws InterruptedException {
+        when:
         client.send(NEW_ORDER_SINGLE);
         client.send(MARKET_DATA_REQUEST);
         final FixMessage fixMessage = server.discardUntilMsgTypeReceived(MsgTypes.MarketDataRequest);
-        assertEquals(fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest);
+
+        then:
+        assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
     }
 
 
@@ -168,22 +183,26 @@ public class MatchingSessionTest {
     TEST OF expect(final String fixExpression)
      */
 
-    @Test
     public void testExpectExpression_passes_matchOnWholeExpression() throws InterruptedException {
+        when:
         client.send(MARKET_DATA_REQUEST);
         final FixMessage fixMessage = server.expect(MARKET_DATA_REQUEST);
-        assertEquals(fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest);
+
+        then:
+        assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
     }
 
-    @Test
     public void testExpectExpression_passes_matchInTwoRepeats() throws InterruptedException {
+        when:
         client.send(MARKET_DATA_REQUEST);
         final FixMessage fixMessage = server.expect("55=GBP/USD|55=AUD/USD");
-        assertEquals(fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest);
+
+        then:
+        assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
     }
 
-    @Test
     public void testExpectExpression_fails_matchInTwoRepeats_howeverMatchesAreInWrongOrder() throws InterruptedException {
+        expect:
         client.send(MARKET_DATA_REQUEST);
         try {
             server.expect("55=AUD/USD|55=GBP/USD");
@@ -194,8 +213,8 @@ public class MatchingSessionTest {
         fail("Should not reach here.  AssertionError should have been thrown.");
     }
 
-    @Test
     public void testExpectExpression_fails() throws InterruptedException {
+        expect:
         client.send(MARKET_DATA_REQUEST);
         try {
             server.expect(NEW_ORDER_SINGLE);
@@ -213,15 +232,17 @@ public class MatchingSessionTest {
     TEST OF expect(final MsgType msgType)
      */
 
-    @Test
     public void testExpectMsgType_passes() throws InterruptedException {
+        when:
         client.send(MARKET_DATA_REQUEST);
         final FixMessage fixMessage = server.expect(MsgTypes.MarketDataRequest);
-        assertEquals(fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest);
+
+        then:
+        assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
     }
 
-    @Test
     public void testExpectMsgType_fails() throws InterruptedException {
+        expect:
         client.send(MARKET_DATA_REQUEST);
         try {
             server.expect(MsgTypes.NewOrderSingle);

@@ -22,7 +22,7 @@ public class DiscretionRoundDirection extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field MORE_PASSIVE__ON_A_BUY_ORDER_ROUND_DOWN_TO_THE_NEAREST_TICK_ON_A = new Field(DiscretionRoundDirection.INSTANCE, Values.MORE_PASSIVE__ON_A_BUY_ORDER_ROUND_DOWN_TO_THE_NEAREST_TICK_ON_A.getOrdinal());

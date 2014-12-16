@@ -22,7 +22,7 @@ public class ReportToExch extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field INDICATES_THE_PARTY_SENDING_MESSAGE_WILL_REPORT_TRADE = new Field(ReportToExch.INSTANCE, Values.INDICATES_THE_PARTY_SENDING_MESSAGE_WILL_REPORT_TRADE.getOrdinal());

@@ -10,5 +10,5 @@ import java.util.Map;
  */
 public interface FieldSource {
     List<Field> getAllFieldsRecursively();
-    Map<String, String> getFieldReferenceMap();
+    Map<String, Field> getFieldReferenceMap();
 }

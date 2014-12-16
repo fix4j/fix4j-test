@@ -22,7 +22,7 @@ public class DiscretionInst extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field RELATED_TO_LOCAL_PRIMARY_PRICE = new Field(DiscretionInst.INSTANCE, Values.RELATED_TO_LOCAL_PRIMARY_PRICE.getOrdinal());

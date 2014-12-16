@@ -22,7 +22,7 @@ public class CrossType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field CROSS_ONE_SIDE__CROSS_TRADE_WHICH_IS_PARTIALLY_EXECUTED_WITH_THE = new Field(CrossType.INSTANCE, Values.CROSS_ONE_SIDE__CROSS_TRADE_WHICH_IS_PARTIALLY_EXECUTED_WITH_THE.getOrdinal());

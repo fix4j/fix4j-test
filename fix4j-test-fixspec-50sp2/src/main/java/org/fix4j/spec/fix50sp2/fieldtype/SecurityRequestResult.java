@@ -22,7 +22,7 @@ public class SecurityRequestResult extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field NOT_AUTHORIZED_TO_RETRIEVE_INSTRUMENT_DATA = new Field(SecurityRequestResult.INSTANCE, Values.NOT_AUTHORIZED_TO_RETRIEVE_INSTRUMENT_DATA.getOrdinal());

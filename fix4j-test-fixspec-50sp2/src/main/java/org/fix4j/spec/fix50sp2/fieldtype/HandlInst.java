@@ -22,7 +22,7 @@ public class HandlInst extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field MANUAL_ORDER_BEST_EXECUTION = new Field(HandlInst.INSTANCE, Values.MANUAL_ORDER_BEST_EXECUTION.getOrdinal());

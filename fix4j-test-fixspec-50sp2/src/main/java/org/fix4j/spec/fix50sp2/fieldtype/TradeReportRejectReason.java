@@ -22,7 +22,7 @@ public class TradeReportRejectReason extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field UNAUTHORIZED_TO_REPORT_TRADES = new Field(TradeReportRejectReason.INSTANCE, Values.UNAUTHORIZED_TO_REPORT_TRADES.getOrdinal());

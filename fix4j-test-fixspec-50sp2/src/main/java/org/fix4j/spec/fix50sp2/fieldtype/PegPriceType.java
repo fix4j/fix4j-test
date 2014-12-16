@@ -22,7 +22,7 @@ public class PegPriceType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field OPENING_PEG = new Field(PegPriceType.INSTANCE, Values.OPENING_PEG.getOrdinal());

@@ -8,7 +8,8 @@ import org.fix4j.test.session.MatchingSession;
 import org.fix4j.test.session.TestSessionHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.Test
+import spock.lang.Specification;
 
 import static org.junit.Assert.fail;
 
@@ -17,7 +18,7 @@ import static org.junit.Assert.fail;
  * Date: 13/08/2014
  * Time: 8:57 PM
  */
-public class MatchingSessionTimeoutTest {
+public class MatchingSessionTimeoutTest extends Specification{
     private static MatchingSession server;
     private static MatchingSession client;
 
@@ -46,8 +47,7 @@ public class MatchingSessionTimeoutTest {
             "[Side]54=1[BUY]|" +
             "[HandlInst]21=2[AUTOMATED_EXECUTION_ORDER_PUBLIC_BROKER_INTERVENTION_OK]|";
 
-    @BeforeClass
-    public static void setup() throws InterruptedException {
+    public void setupSpec() throws InterruptedException {
         final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory());
         server = helper.createMatchingSession(new FixSessionId("FIX.4.4", "SERVER_COMP_ID", "CLIENT_COMP_ID"), FixConnectionMode.ACCEPTOR);
         client = helper.createMatchingSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR);
@@ -55,14 +55,13 @@ public class MatchingSessionTimeoutTest {
         server.discardUntilMsgTypeReceived(MsgTypes.Logon);
     }
 
-    @AfterClass
-    public static void teardown() throws InterruptedException {
+    public void cleanupSpec() throws InterruptedException {
         client.shutdown();
         server.shutdown();
     }
 
-    @Test
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_nothingReceived_thenTimeout() throws InterruptedException {
+        expect:
         try{
             server.discardUntilExpected(MsgTypes.MarketDataRequest, MARKET_DATA_REQUEST);
         } catch(final AssertionError e){
@@ -72,8 +71,8 @@ public class MatchingSessionTimeoutTest {
         fail("Should not reach here.  AssertionError should have been thrown.");
     }
 
-    @Test
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_messageDiscarded_thenTimeout() throws InterruptedException {
+        expect:
         client.send(NEW_ORDER_SINGLE);
         try{
             server.discardUntilExpected(MsgTypes.MarketDataRequest, MARKET_DATA_REQUEST);
@@ -84,8 +83,8 @@ public class MatchingSessionTimeoutTest {
         fail("Should not reach here.  AssertionError should have been thrown.");
     }
 
-    @Test
     public void testDiscardUntilExpected_matchOnExpression_nothingReceived_thenTimeout() throws InterruptedException {
+        expect:
         try{
             server.discardUntilExpected(MARKET_DATA_REQUEST);
         } catch(final AssertionError e){
@@ -95,8 +94,8 @@ public class MatchingSessionTimeoutTest {
         fail("Should not reach here.  AssertionError should have been thrown.");
     }
 
-    @Test
     public void testDiscardUntilExpected_matchOnExpression_messageDiscarded_thenTimeout() throws InterruptedException {
+        expect:
         client.send(NEW_ORDER_SINGLE);
         try{
             server.discardUntilExpected(MARKET_DATA_REQUEST);
@@ -107,8 +106,8 @@ public class MatchingSessionTimeoutTest {
         fail("Should not reach here.  AssertionError should have been thrown.");
     }
 
-    @Test
     public void testExpectExpression_timeout() throws InterruptedException {
+        expect:
         try{
             server.expect(NEW_ORDER_SINGLE);
         } catch(final AssertionError e){
@@ -118,8 +117,8 @@ public class MatchingSessionTimeoutTest {
         fail("Should not reach here.  AssertionError should have been thrown.");
     }
 
-    @Test
     public void testExpectMsgType_timeout() throws InterruptedException {
+        expect:
         try{
             server.expect(MsgTypes.NewOrderSingle);
         } catch(final AssertionError e){

@@ -47,7 +47,7 @@ public class MatchActivity {
             //Message processing
             MatchActivityDirectiveAndReport matchActivityDirectiveAndReport = messageProcessor.processMessage(message);
             if(matchActivityDirectiveAndReport.discardThisMessage()) {
-                LOGGER.info("<<<<<< Discarding message " + message.toDelimitedMessageWithAnnotations());
+                LOGGER.info("<<<<<< Discarding message " + message.toDelimitedMessageWithDescriptors());
                 discardedMessages.add(message);
             }
             if(matchActivityDirectiveAndReport.finished()){

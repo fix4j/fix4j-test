@@ -63,11 +63,15 @@ public class Field implements FieldSource, Part, PrettyPrintable {
 
     @Override
     public String toString() {
-        return toStringWithAnnotations();
+        return toStringWithDescriptors();
     }
 
-    public String toStringWithAnnotations() {
-        return fieldType + "=" + fieldType.formatValue(value);
+    public String toStringWithDescriptors() {
+        return fieldType + "=" + getFormattedValue();
+    }
+
+    public String getFormattedValue() {
+        return fieldType.formatValue(value);
     }
 
     public String toStringWithRawValues(){
@@ -100,15 +104,41 @@ public class Field implements FieldSource, Part, PrettyPrintable {
     }
 
     @Override
-    public Map<String, String> getFieldReferenceMap() {
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put(fieldType.getName(), fieldType.formatValue(this.value));
-        map.put(""+fieldType.getTag().getValue(), fieldType.formatValue(this.value));
+    public Map<String, Field> getFieldReferenceMap() {
+        Map<String, Field> map = new LinkedHashMap<>();
+        map.put(fieldType.getName(), this);
+        map.put(""+fieldType.getTag().getValue(), this);
         return map;
     }
 
     @Override
     public String toPrettyString() {
         return toString() + Consts.EOL;
+    }
+
+    public boolean isOfType(final FieldType fieldType) {
+        return this.fieldType.equals(fieldType);
+    }
+
+    public boolean isOfTag(final int tag) {
+        return this.fieldType.getTag().getValue() == tag;
+    }
+
+    public void assertValueEquals(final String value) {
+        if(!value.equals(this.value)){
+            throw new AssertionError("Actual value '" + this.value + "' does not equal expected value '" + value + "'");
+        }
+    }
+
+    public void assertValueContains(final String text) {
+        if(!this.value.contains(text)){
+            throw new AssertionError("Actual value '" + this.value + "' does not contain regex '" + value + "'");
+        }
+    }
+
+    public void assertValueEquals(final double dbl) {
+        if(!this.value.equals(String.valueOf(dbl))){
+            throw new AssertionError("Actual value '" + this.value + "' does not equal '" + dbl + "'");
+        }
     }
 }

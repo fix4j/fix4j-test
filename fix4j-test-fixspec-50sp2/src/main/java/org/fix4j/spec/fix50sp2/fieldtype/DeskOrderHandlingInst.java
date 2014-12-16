@@ -22,7 +22,7 @@ public class DeskOrderHandlingInst extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field EXCHANGE_FOR_PHYSICAL_TRANSACTION = new Field(DeskOrderHandlingInst.INSTANCE, Values.EXCHANGE_FOR_PHYSICAL_TRANSACTION.getOrdinal());

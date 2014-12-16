@@ -22,7 +22,7 @@ public class IOITransType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field REPLACE = new Field(IOITransType.INSTANCE, Values.REPLACE.getOrdinal());

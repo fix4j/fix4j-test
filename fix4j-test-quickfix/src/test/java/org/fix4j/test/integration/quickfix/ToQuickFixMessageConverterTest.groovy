@@ -1,7 +1,9 @@
 package org.fix4j.test.integration.quickfix
 
+import org.fix4j.spec.fix50sp2.FieldTypes
 import org.fix4j.spec.fix50sp2.FixSpec
 import org.fix4j.test.fixmodel.FixMessage
+import org.fix4j.test.fixspec.BaseGroupType
 import org.fix4j.test.fixspec.FixSpecification
 import org.fix4j.test.expression.MessageExpression
 import org.fix4j.test.expression.MessageExpressionParser
@@ -16,6 +18,7 @@ import quickfix.field.MsgType
 import quickfix.field.NoRelatedSym
 import quickfix.field.OrdType
 import quickfix.field.OrderQty
+import quickfix.field.PartyRole
 import quickfix.field.QuoteReqID
 import quickfix.field.SenderCompID
 import quickfix.field.SendingTime
@@ -34,6 +37,62 @@ import spock.lang.Specification
 class ToQuickFixMessageConverterTest extends Specification {
     private final FixSpecification fixSpecification = FixSpec.INSTANCE;
     private final MessageExpressionParser parser = new MessageExpressionParser(fixSpecification);
+
+    def "Convert message with repeating group"(){
+        given:
+
+        final FixMessage fixMessage = parser.parse(
+                "    [MsgType]35=X[MARKETDATAINCREMENTALREFRESH]\n" +
+                "    [MDReqID]262=request123\n" +
+                "    [NoMDEntries]268=4\n" +
+                "      1.[MDUpdateAction]279=0[NEW]\n" +
+                "        [MDEntryType]269=0[BID]\n" +
+                "        [Symbol]55=AUD/USD\n" +
+                "        [MDEntryPx]270=1.12345\n" +
+                "        [NoPartyIDs]453=2\n" +
+                "          1.[PartyID]448=MrMaker\n" +
+                "            [PartyRole]452=66[MARKET_MAKER]\n" +
+                "          2.[PartyID]448=Exchange\n" +
+                "            [PartyRole]452=22[EXCHANGE]\n" +
+                "      2.[MDUpdateAction]279=0[NEW]\n" +
+                "        [MDEntryType]269=1[OFFER]\n" +
+                "        [Symbol]55=AUD/USD\n" +
+                "        [MDEntryPx]270=1.12355\n" +
+                "        [NoPartyIDs]453=2\n" +
+                "          1.[PartyID]448=MrMaker\n" +
+                "            [PartyRole]452=66[MARKET_MAKER]\n" +
+                "          2.[PartyID]448=Exchange\n" +
+                "            [PartyRole]452=22[EXCHANGE]\n" +
+                "      3.[MDUpdateAction]279=0[NEW]\n" +
+                "        [MDEntryType]269=0[BID]\n" +
+                "        [Symbol]55=AUD/USD\n" +
+                "        [MDEntryPx]270=1.1234\n" +
+                "        [NoPartyIDs]453=2\n" +
+                "          1.[PartyID]448=MrMaker\n" +
+                "            [PartyRole]452=66[MARKET_MAKER]\n" +
+                "          2.[PartyID]448=Exchange\n" +
+                "            [PartyRole]452=22[EXCHANGE]\n" +
+                "      4.[MDUpdateAction]279=0[NEW]\n" +
+                "        [MDEntryType]269=1[OFFER]\n" +
+                "        [Symbol]55=AUD/USD\n" +
+                "        [MDEntryPx]270=1.1236\n" +
+                "          1.[PartyID]448=MrMaker\n" +
+                "            [PartyRole]452=66[MARKET_MAKER]\n" +
+                "          2.[PartyID]448=Exchange\n" +
+                "            [PartyRole]452=22[EXCHANGE]"
+        ).asMessage(fixSpecification);
+
+
+        final ToQuickFixMessageConverter toQuickFixMessageConverter = new ToQuickFixMessageConverter(fixSpecification);
+        final Message quickfixMessage = toQuickFixMessageConverter.convert(fixMessage);
+
+        final FromQuickFixMessageConverter fromQuickFixMessageConverter = new FromQuickFixMessageConverter(fixSpecification);
+        final FixMessage convertedBackFixMessage = fromQuickFixMessageConverter.convert(quickfixMessage);
+        println convertedBackFixMessage.toPrettyString();
+
+        assert fixMessage == convertedBackFixMessage;
+    }
+
 
     def "Convert flat message (no groups)"() {
         given:

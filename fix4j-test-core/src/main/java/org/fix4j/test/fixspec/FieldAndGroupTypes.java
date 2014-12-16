@@ -16,4 +16,5 @@ public interface FieldAndGroupTypes extends PrettyPrintable, FieldTypeSource{
     GroupType getGroupType(int tag);
     boolean containsChild(FieldType type);
     boolean containsRecursively(FieldType type);
+    List<Integer> getFieldOrder();
 }

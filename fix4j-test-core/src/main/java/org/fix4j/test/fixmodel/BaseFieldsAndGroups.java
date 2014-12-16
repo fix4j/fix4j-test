@@ -85,8 +85,8 @@ public class BaseFieldsAndGroups implements FieldsAndGroups {
     }
 
     @Override
-    public Map<String, String> getFieldReferenceMap() {
-        final Map<String, String> map = new LinkedHashMap<>();
+    public Map<String, Field> getFieldReferenceMap() {
+        final Map<String, Field> map = new LinkedHashMap<>();
         for (final Field field : fields.values()) {
             map.putAll(field.getFieldReferenceMap());
         }

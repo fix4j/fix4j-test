@@ -22,7 +22,7 @@ public class LastLiquidityInd extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field LIQUIDITY_ROUTED_OUT = new Field(LastLiquidityInd.INSTANCE, Values.LIQUIDITY_ROUTED_OUT.getOrdinal());

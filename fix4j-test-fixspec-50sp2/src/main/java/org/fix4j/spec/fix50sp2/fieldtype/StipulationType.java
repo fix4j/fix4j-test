@@ -22,7 +22,7 @@ public class StipulationType extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field YEAR_OR_YEARMONTH_OF_ISSUE_EX_234200209 = new Field(StipulationType.INSTANCE, Values.YEAR_OR_YEARMONTH_OF_ISSUE_EX_234200209.getOrdinal());

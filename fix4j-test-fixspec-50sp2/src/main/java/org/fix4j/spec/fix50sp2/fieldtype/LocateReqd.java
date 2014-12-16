@@ -22,7 +22,7 @@ public class LocateReqd extends BaseFieldType {
     public static Field withValue(final String value){ return new Field(INSTANCE, value); }
     public static Field withValue(final long value){ return new Field(INSTANCE, ""+value); }
 
-    public static FieldFactory withValue = new FieldFactory();
+    public static FieldFactory withValue(){ return new FieldFactory(); }
 
     public static class FieldFactory{
         public final Field INDICATES_THE_BROKER_IS_NOT_REQUIRED_TO_LOCATE = new Field(LocateReqd.INSTANCE, Values.INDICATES_THE_BROKER_IS_NOT_REQUIRED_TO_LOCATE.getOrdinal());
