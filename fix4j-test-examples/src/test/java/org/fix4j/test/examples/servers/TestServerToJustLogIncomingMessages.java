@@ -1,13 +1,9 @@
-package org.fix4j.test.examples;
+package org.fix4j.test.examples.servers;
 
-import org.fix4j.spec.fix50sp2.MsgTypes;
 import org.fix4j.test.DefaultContextFactory;
-import org.fix4j.test.fixmodel.FixMessage;
-import org.fix4j.test.properties.PropertyKeysAndDefaultValues;
 import org.fix4j.test.session.BlockingSession;
 import org.fix4j.test.session.FixConnectionMode;
 import org.fix4j.test.session.FixSessionId;
-import org.fix4j.test.session.MatchingSession;
 import org.fix4j.test.session.TestSessionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

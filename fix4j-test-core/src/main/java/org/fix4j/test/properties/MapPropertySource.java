@@ -1,7 +1,9 @@
 package org.fix4j.test.properties;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * User: ben
@@ -16,6 +18,11 @@ public class MapPropertySource implements PropertySource {
         this.properties = Collections.unmodifiableMap(properties);
         this.sourceName = sourceName;
     }
+
+    public MapPropertySource(final Properties properties, final String sourceName) {
+        this(PropertyUtils.convertObjectMapToStringMap(properties), sourceName);
+    }
+
 
     @Override
     public String getSourceName() {

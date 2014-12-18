@@ -11,3 +11,7 @@
 00011   DONE Package restructure/organization
 00012   Test coverage
 00013   Finish VariousMessageRepresentationsTest
+
+
+FAQ
+Do I need to populate header fields when creating a message?

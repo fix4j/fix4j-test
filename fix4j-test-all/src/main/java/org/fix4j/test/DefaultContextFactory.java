@@ -8,6 +8,7 @@ import org.fix4j.test.properties.ApplicationProperties;
 import org.fix4j.test.session.AbstractContextFactory;
 
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * User: ben
@@ -20,6 +21,10 @@ public class DefaultContextFactory extends AbstractContextFactory {
     }
 
     public DefaultContextFactory() {
+    }
+
+    public DefaultContextFactory(final Properties properties) {
+        super(properties);
     }
 
     @Override

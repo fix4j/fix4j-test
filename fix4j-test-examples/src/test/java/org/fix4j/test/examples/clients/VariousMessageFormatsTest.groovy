@@ -1,4 +1,4 @@
-package org.fix4j.test.examples
+package org.fix4j.test.examples.clients
 
 import org.fix4j.spec.fix50sp2.FieldTypes
 import org.fix4j.spec.fix50sp2.FixSpec

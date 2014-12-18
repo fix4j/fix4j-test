@@ -95,10 +95,10 @@ class OnFailureReportsTest extends Specification {
 
     public void testDiscardUntilExpected_msgType_thenExpression(){
         when:
-        client.discardUntilMsgTypeReceived(MsgTypes.Logon);
-        server.discardUntilMsgTypeReceived(MsgTypes.Logon);
+        client.discardUntil(MsgTypes.Logon);
+        server.discardUntil(MsgTypes.Logon);
         client.send(marketDataRequest1);
-        server.discardUntilExpected(MsgTypes.MarketDataRequest, "[MsgType]35=D[NEWORDERSINGLE]");
+        server.discardUntil(MsgTypes.MarketDataRequest, "[MsgType]35=D[NEWORDERSINGLE]");
 
         then:
         def e = thrown(AssertionError);
@@ -112,13 +112,13 @@ class OnFailureReportsTest extends Specification {
 
     public void testRecentOutboundMessages(){
         when:
-        final FixMessage clientLogon = client.discardUntilMsgTypeReceived(MsgTypes.Logon);
-        final FixMessage serverLogon = server.discardUntilMsgTypeReceived(MsgTypes.Logon);
+        final FixMessage clientLogon = client.discardUntil(MsgTypes.Logon);
+        final FixMessage serverLogon = server.discardUntil(MsgTypes.Logon);
 
         server.send(marketDataRequest1);
         server.send(newOrderSingle1);
         client.send(marketDataRequest2);
-        server.discardUntilExpected(MsgTypes.MarketDataRequest, "[MsgType]35=D[NEWORDERSINGLE]");
+        server.discardUntil(MsgTypes.MarketDataRequest, "[MsgType]35=D[NEWORDERSINGLE]");
 
         then:
         def e = thrown(AssertionError);
@@ -131,18 +131,18 @@ class OnFailureReportsTest extends Specification {
 
     public void testRecentInboundMessages(){
         when:
-        final FixMessage clientLogon = client.discardUntilMsgTypeReceived(MsgTypes.Logon);
-        final FixMessage serverLogon = server.discardUntilMsgTypeReceived(MsgTypes.Logon);
+        final FixMessage clientLogon = client.discardUntil(MsgTypes.Logon);
+        final FixMessage serverLogon = server.discardUntil(MsgTypes.Logon);
 
         client.send(newOrderSingle1);
         client.send(newOrderSingle2);
         client.send(marketDataRequest2);
 
-        final recievedNewOrderSingle1 = server.discardUntilMsgTypeReceived(MsgTypes.NewOrderSingle);
-        final recievedNewOrderSingle2 = server.discardUntilMsgTypeReceived(MsgTypes.NewOrderSingle);
+        final recievedNewOrderSingle1 = server.discardUntil(MsgTypes.NewOrderSingle);
+        final recievedNewOrderSingle2 = server.discardUntil(MsgTypes.NewOrderSingle);
 
         //Cause a failure by waiting for a MarketDataRequest, but assert it contains a newOrderSingle tag
-        server.discardUntilExpected(MsgTypes.MarketDataRequest, "[MsgType]35=D[NEWORDERSINGLE]");
+        server.discardUntil(MsgTypes.MarketDataRequest, "[MsgType]35=D[NEWORDERSINGLE]");
 
         then:
         final Failure f = thrown(Failure);

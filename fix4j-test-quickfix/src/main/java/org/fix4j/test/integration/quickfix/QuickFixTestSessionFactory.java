@@ -45,7 +45,7 @@ public class QuickFixTestSessionFactory implements FixEngineSessionFactory {
             settings.setString("ConnectionType", (fixConnectionMode == FixConnectionMode.INITIATOR ? "initiator": "acceptor"));
             settings.setString("SenderCompID", quickfixSessionId.getSenderCompID());
             settings.setString("TargetCompID", quickfixSessionId.getTargetCompID());
-            settings.setString("SocketConnectHost", testProperties.getAsString("quickfix.socket.connect.host", "localhost"));
+            settings.setString("SocketConnectHost", testProperties.getAsString(QuickFixProperties.SOCKET_CONNECT_HOST, "localhost"));
             settings.setString("StartTime", testProperties.getAsString("quickfix.start.time", "00:00:00"));
             settings.setString("EndTime", testProperties.getAsString("quickfix.end.time", "00:00:00"));
             settings.setString("HeartBtInt", testProperties.getAsString("quickfix.heart.beat.interval", "10"));

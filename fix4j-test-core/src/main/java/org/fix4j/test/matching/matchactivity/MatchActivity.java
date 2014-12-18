@@ -33,11 +33,11 @@ public class MatchActivity {
     }
 
     public MatchActivityResult run() {
-        final RecentMessages discardedMessages = new RecentMessages(testProperties.getAsInt(PropertyKeysAndDefaultValues.SIZE_OF_DISCARDED_MESSAGES.name()));
+        final RecentMessages discardedMessages = new RecentMessages(testProperties.getAsInt(PropertyKeysAndDefaultValues.SIZE_OF_DISCARDED_MESSAGES.getKey()));
         final long timeStarted = DateUtils.now();
 
-        while((DateUtils.timeSince(timeStarted) < testProperties.getAsLong(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS.name()))){
-            long timeRemaining = testProperties.getAsLong(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS.name()) - DateUtils.timeSince(timeStarted);
+        while((DateUtils.timeSince(timeStarted) < testProperties.getAsLong(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS.getKey()))){
+            long timeRemaining = testProperties.getAsLong(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS.getKey()) - DateUtils.timeSince(timeStarted);
             final FixMessage message = messages.get(timeRemaining);
 
             if(message == null) {

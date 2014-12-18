@@ -1,5 +1,6 @@
 package org.fix4j.test.properties;
 
+import org.fix4j.test.util.Keyable;
 import org.fix4j.test.util.StringUtils;
 
 import java.util.Collections;
@@ -19,6 +20,56 @@ public class CompositePropertyMap implements PropertySource, ApplicationProperti
         this.properties = Collections.unmodifiableMap(properties);
 
         this.sourceName = sourceName;
+    }
+
+    @Override
+    public String getAsString(final Keyable<String> key){
+        return getAsString(key.getKey());
+    }
+
+    @Override
+    public String getAsString(final Keyable<String> key, final String defaultValue){
+        return getAsString(key.getKey(), defaultValue);
+    }
+
+    @Override
+    public Boolean getAsBoolean(final Keyable<String> key){
+        return getAsBoolean(key.getKey());
+    }
+
+    @Override
+    public Boolean getAsBoolean(final Keyable<String> key, final Boolean defaultValue){
+        return getAsBoolean(key.getKey(), defaultValue);
+    }
+
+    @Override
+    public Integer getAsInt(final Keyable<String> key){
+        return getAsInt(key.getKey());
+    }
+
+    @Override
+    public Integer getAsInt(final Keyable<String> key, final Integer defaultValue){
+        return getAsInt(key.getKey(), defaultValue);
+    }
+
+    @Override
+    public Double getAsDouble(final Keyable<String> key){
+        return getAsDouble(key.getKey());
+    }
+
+    @Override
+    public Double getAsDouble(final Keyable<String> key, final Double defaultValue){
+        return getAsDouble(key.getKey(), defaultValue);
+    }
+
+    @Override
+    public Long getAsLong(final Keyable<String> key){
+        return getAsLong(key.getKey());
+    }
+
+    @Override
+    public Long getAsLong(final Keyable<String> key, final Long defaultValue){
+        return getAsLong(key.getKey(), defaultValue);
     }
 
     @Override

@@ -42,7 +42,7 @@ public class BlockingSession implements TestClientSession {
         try {
             FixMessage message = null;
             while(message == null){
-                message = testContext.sessionConnectors.inboundSupplier.get(testContext.applicationProperties.getAsLong(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS.name()));
+                message = testContext.sessionConnectors.inboundSupplier.get(testContext.applicationProperties.getAsLong(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS.getKey()));
             }
             return message;
         } catch (final Failure failure) {

@@ -1,6 +1,7 @@
 package org.fix4j.test.session;
 
 import org.fix4j.test.fixspec.FixSpecification;
+import org.fix4j.test.properties.ApplicationProperties;
 
 /**
  * User: ben
@@ -10,4 +11,5 @@ import org.fix4j.test.fixspec.FixSpecification;
 public interface ContextFactory {
     TestContext createTestContext(FixSessionId fixSessionId, FixConnectionMode fixConnectionMode);
     FixSpecification getFixSpecification();
+    ApplicationProperties getProperties();
 }

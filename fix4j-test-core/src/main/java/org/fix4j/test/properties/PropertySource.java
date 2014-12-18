@@ -1,5 +1,6 @@
 package org.fix4j.test.properties;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**

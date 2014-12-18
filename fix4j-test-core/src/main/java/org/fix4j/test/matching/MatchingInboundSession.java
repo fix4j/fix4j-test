@@ -98,7 +98,7 @@ public class MatchingInboundSession {
     }
 
     public FixMessage getNextMessage() {
-        return messages.get(properties.getAsLong(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS.name()));
+        return messages.get(properties.getAsLong(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS.getKey()));
     }
 
     public FixMessage getNextMessage(final long waitTimeoutInMs) {

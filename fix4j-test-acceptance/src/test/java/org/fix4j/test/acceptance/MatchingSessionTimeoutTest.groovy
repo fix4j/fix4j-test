@@ -5,10 +5,7 @@ import org.fix4j.test.DefaultContextFactory;
 import org.fix4j.test.session.FixConnectionMode;
 import org.fix4j.test.session.FixSessionId;
 import org.fix4j.test.session.MatchingSession;
-import org.fix4j.test.session.TestSessionHelper;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test
+import org.fix4j.test.session.TestSessionHelper
 import spock.lang.Specification;
 
 import static org.junit.Assert.fail;
@@ -51,8 +48,8 @@ public class MatchingSessionTimeoutTest extends Specification{
         final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory());
         server = helper.createMatchingSession(new FixSessionId("FIX.4.4", "SERVER_COMP_ID", "CLIENT_COMP_ID"), FixConnectionMode.ACCEPTOR);
         client = helper.createMatchingSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR);
-        client.discardUntilMsgTypeReceived(MsgTypes.Logon);
-        server.discardUntilMsgTypeReceived(MsgTypes.Logon);
+        client.discardUntil(MsgTypes.Logon);
+        server.discardUntil(MsgTypes.Logon);
     }
 
     public void cleanupSpec() throws InterruptedException {
@@ -63,7 +60,7 @@ public class MatchingSessionTimeoutTest extends Specification{
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_nothingReceived_thenTimeout() throws InterruptedException {
         expect:
         try{
-            server.discardUntilExpected(MsgTypes.MarketDataRequest, MARKET_DATA_REQUEST);
+            server.discardUntil(MsgTypes.MarketDataRequest, MARKET_DATA_REQUEST);
         } catch(final AssertionError e){
             assertTimeout(e);
             return;
@@ -75,7 +72,7 @@ public class MatchingSessionTimeoutTest extends Specification{
         expect:
         client.send(NEW_ORDER_SINGLE);
         try{
-            server.discardUntilExpected(MsgTypes.MarketDataRequest, MARKET_DATA_REQUEST);
+            server.discardUntil(MsgTypes.MarketDataRequest, MARKET_DATA_REQUEST);
         } catch(final AssertionError e){
             assertTimeout(e);
             return;
@@ -86,7 +83,7 @@ public class MatchingSessionTimeoutTest extends Specification{
     public void testDiscardUntilExpected_matchOnExpression_nothingReceived_thenTimeout() throws InterruptedException {
         expect:
         try{
-            server.discardUntilExpected(MARKET_DATA_REQUEST);
+            server.discardUntil(MARKET_DATA_REQUEST);
         } catch(final AssertionError e){
             assertTimeout(e);
             return;
@@ -98,7 +95,7 @@ public class MatchingSessionTimeoutTest extends Specification{
         expect:
         client.send(NEW_ORDER_SINGLE);
         try{
-            server.discardUntilExpected(MARKET_DATA_REQUEST);
+            server.discardUntil(MARKET_DATA_REQUEST);
         } catch(final AssertionError e){
             assertTimeout(e);
             return;

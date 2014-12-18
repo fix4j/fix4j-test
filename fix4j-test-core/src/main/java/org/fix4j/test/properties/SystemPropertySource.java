@@ -4,9 +4,20 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * Provides a source of properties from the JVMs list of system properties.
+ *
+ * These are the properties that are usually available by calling System.getProperty(key)
+ *
+ * These properties can be specified programatically, e.g.
+ * <code>
+ *     System.setProperty("fix4j.first.property", "blah");
+ * </code>
+ * ...or via the command line:
+ * java -Dfix4j.first.property=blah MyAppOrTest
+ *
+ * Please note, only keys prefixed with "fix4j" or "FIX4J" will be available.
+ *
  * User: ben
- * Date: 3/12/14
- * Time: 5:10 PM
  */
 public class SystemPropertySource implements PropertySource {
     private final static String SOURCE_NAME = "SYSTEM_PROPERTIES";
@@ -18,11 +29,6 @@ public class SystemPropertySource implements PropertySource {
 
     @Override
     public Map<String, String> getProperties() {
-        Map<Object, Object> systemProperties = System.getProperties();
-        Map<String, String> properties = new LinkedHashMap<>(systemProperties.size());
-        for (final Object key : systemProperties.keySet()) {
-            properties.put(key.toString(), systemProperties.get(key).toString());
-        }
-        return properties;
+        return PropertyUtils.getPropertiesWithFix4jKeyPrefix(PropertyUtils.convertObjectMapToStringMap(System.getProperties()));
     }
 }

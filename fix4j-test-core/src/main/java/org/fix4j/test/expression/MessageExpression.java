@@ -18,6 +18,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Is a representation of a fix message, to be used either to build a FixMessage to send, or to
+ * assert against incoming fix messages.
+ *
+ *
+ */
 public class MessageExpression implements FixMessageMatcher {
     private final List<Field> fieldExpressions;
 

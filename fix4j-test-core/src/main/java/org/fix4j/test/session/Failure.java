@@ -79,6 +79,6 @@ public class Failure extends AssertionError {
 
     @Override
     public String toString() {
-        return "FAILURE: " + super.getMessage();
+        return "FAILURE: " + super.getMessage() + Consts.EOL;
     }
 }

@@ -33,20 +33,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public abstract class AbstractContextFactory implements ContextFactory {
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractContextFactory.class);
     private final FixSpecification fixSpecification;
-    private final PropertySource testRunProperties;
+    private final ApplicationProperties properties;
 
-    public AbstractContextFactory(final Map<String, String> properties) {
-        this.fixSpecification = createFixSpecification();
-        this.testRunProperties = new MapPropertySource(properties, "TEST");
+    public AbstractContextFactory () {
+        this((PropertySource) null);
     }
 
-    public AbstractContextFactory() {
+    public AbstractContextFactory (final Map<String, String> properties) {
+        this(new MapPropertySource(properties, "TEST"));
+    }
+
+    public AbstractContextFactory(final Properties properties) {
+        this(new MapPropertySource(properties, "TEST"));
+    }
+
+    public AbstractContextFactory(final PropertySource propertySource) {
         this.fixSpecification = createFixSpecification();
-        this.testRunProperties = null;
+        this.properties = createApplicationProperties(propertySource);
     }
 
     protected abstract FixEngineSessionFactory createFixEngineSessionFactory(final FixSpecification fixSpecification, final ApplicationProperties properties);
@@ -54,7 +62,6 @@ public abstract class AbstractContextFactory implements ContextFactory {
 
     @Override
     public TestContext createTestContext(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode) {
-        final ApplicationProperties properties = createApplicationProperties();
         LOGGER.info(properties.toString());
         final FixEngineSessionFactory fixEngineSessionFactory = createFixEngineSessionFactory(fixSpecification, properties);
         final BlockingPipe<FixMessage> inboundBlockingPipe = new BlockingPipe<>("fromThirdPartyFixEngine");
@@ -71,20 +78,25 @@ public abstract class AbstractContextFactory implements ContextFactory {
         return fixSpecification;
     }
 
-    protected ApplicationProperties createApplicationProperties() {
-        return CompositePropertyMap.Builder.create("ALL")
-                .addLast(testRunProperties)
-                .addLast(new SystemPropertySource())
-                .addLast(new SystemEnvVariablePropertySource())
-                .addLast(PropertyKeysAndDefaultValues.getDefaultProperties())
-                .build();
+    @Override
+    public ApplicationProperties getProperties() {
+        return properties;
+    }
+
+    protected ApplicationProperties createApplicationProperties(final PropertySource testProperties) {
+        final CompositePropertyMap.Builder builder = CompositePropertyMap.Builder.create("ALL");
+        if(testProperties != null) builder.addLast(testProperties);
+        builder.addLast(new SystemPropertySource());
+        builder.addLast(new SystemEnvVariablePropertySource());
+        builder.addLast(PropertyKeysAndDefaultValues.getDefaultProperties());
+        return builder.build();
     }
 
     protected List<Processor<FixMessage>> createOutboundProcessors(final ApplicationProperties properties) {
         final MessageFlagRules outboundMessageFlagWarningRules = createOutboundMessageFlagWarningRules();
         final MessageFlagRules outboundMessageFlagFailureRules = createOutboundMessageFlagFailureRules();
         final OutboundRecentMessageProcessor outboundRecentMessageProcessor = new OutboundRecentMessageProcessor(outboundMessageFlagWarningRules);
-        final OutboundMessageFlagFailureProcessor outboundMessageFlagFailureProcessor = new OutboundMessageFlagFailureProcessor(outboundMessageFlagFailureRules, properties.getAsBoolean(PropertyKeysAndDefaultValues.FAST_FAIL_ON_TRIGGER_OF_OUTBOUND_MESSAGE_FLAG.name()));
+        final OutboundMessageFlagFailureProcessor outboundMessageFlagFailureProcessor = new OutboundMessageFlagFailureProcessor(outboundMessageFlagFailureRules, properties.getAsBoolean(PropertyKeysAndDefaultValues.FAST_FAIL_ON_TRIGGER_OF_OUTBOUND_MESSAGE_FLAG.getKey()));
         return Arrays.asList(outboundRecentMessageProcessor, outboundMessageFlagFailureProcessor);
     }
 
@@ -95,13 +107,13 @@ public abstract class AbstractContextFactory implements ContextFactory {
 
         final InboundIgnoreProcessor inboundIgnoreProcessor = new InboundIgnoreProcessor(defaultMessagesToIgnore);
         final InboundRecentMessageProcessor inboundRecentMessageProcessor = new InboundRecentMessageProcessor(inboundMessageFlagWarningRules);
-        final InboundMessageFlagFailureProcessor inboundMessageFlagFailureProcessor = new InboundMessageFlagFailureProcessor(inboundMessageFlagFailureRules, properties.getAsBoolean(PropertyKeysAndDefaultValues.FAST_FAIL_ON_TRIGGER_OF_INCOMING_MESSAGE_FLAG.name()));
+        final InboundMessageFlagFailureProcessor inboundMessageFlagFailureProcessor = new InboundMessageFlagFailureProcessor(inboundMessageFlagFailureRules, properties.getAsBoolean(PropertyKeysAndDefaultValues.FAST_FAIL_ON_TRIGGER_OF_INCOMING_MESSAGE_FLAG.getKey()));
         return Arrays.asList(inboundIgnoreProcessor, inboundRecentMessageProcessor, inboundMessageFlagFailureProcessor);
     }
 
     protected FixMessageMatcher createMatcherForMessagesToIgnore(final FixSpecification fixSpecification, final ApplicationProperties properties) {
         final MessageExpressionParser parser = new MessageExpressionParser(fixSpecification);
-        return parser.parse(properties.getAsString(PropertyKeysAndDefaultValues.DEFAULT_MESSAGES_TO_IGNORE.name()));
+        return parser.parse(properties.getAsString(PropertyKeysAndDefaultValues.DEFAULT_MESSAGES_TO_IGNORE.getKey()));
     }
 
     protected MessageFlagRules createOutboundMessageFlagFailureRules() {

@@ -14,8 +14,8 @@ public abstract class AbstractChainedConsumer<M> implements Consumer<M>, Process
 
     @Override
     public void accept(M m) {
-        final M entity = process(m);
-        if(entity != null){
+        m = process(m);
+        if(m != null){
             destination.accept(m);
         }
     }

@@ -6,13 +6,9 @@ import org.fix4j.test.fixmodel.FixMessage;
 import org.fix4j.test.session.FixConnectionMode;
 import org.fix4j.test.session.FixSessionId;
 import org.fix4j.test.session.MatchingSession;
-import org.fix4j.test.session.TestSessionHelper;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test
-import spock.lang.Specification;
+import org.fix4j.test.session.TestSessionHelper
+import spock.lang.Specification
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -54,8 +50,8 @@ public class MatchingSessionTest extends Specification{
         final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory());
         server = helper.createMatchingSession(new FixSessionId("FIX.4.4", "SERVER_COMP_ID", "CLIENT_COMP_ID"), FixConnectionMode.ACCEPTOR);
         client = helper.createMatchingSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR);
-        client.discardUntilMsgTypeReceived(MsgTypes.Logon);
-        server.discardUntilMsgTypeReceived(MsgTypes.Logon);
+        client.discardUntil(MsgTypes.Logon);
+        server.discardUntil(MsgTypes.Logon);
     }
 
     public void cleanupSpec() throws InterruptedException {
@@ -75,14 +71,14 @@ public class MatchingSessionTest extends Specification{
         client.send(MARKET_DATA_REQUEST);
 
         then:
-        final FixMessage fixMessage = server.discardUntilExpected(MsgTypes.MarketDataRequest, MARKET_DATA_REQUEST);
+        final FixMessage fixMessage = server.discardUntil(MsgTypes.MarketDataRequest, MARKET_DATA_REQUEST);
         assert fixMessage.getTypeOfMessage(), MsgTypes.MarketDataRequest;
     }
 
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_passes_wildcard() throws InterruptedException {
         when:
         client.send(MARKET_DATA_REQUEST);
-        final FixMessage fixMessage = server.discardUntilExpected(MsgTypes.MarketDataRequest, "35=.*");
+        final FixMessage fixMessage = server.discardUntil(MsgTypes.MarketDataRequest, "35=.*");
 
         then:
         assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
@@ -91,7 +87,7 @@ public class MatchingSessionTest extends Specification{
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_passes_twoRegexes() throws InterruptedException {
         when:
         client.send(MARKET_DATA_REQUEST);
-        final FixMessage fixMessage = server.discardUntilExpected(MsgTypes.MarketDataRequest, "262=AASD[JKG]+79\\d");
+        final FixMessage fixMessage = server.discardUntil(MsgTypes.MarketDataRequest, "262=AASD[JKG]+79\\d");
 
         then:
         assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
@@ -100,7 +96,7 @@ public class MatchingSessionTest extends Specification{
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_passes_matchInTwoRepeats() throws InterruptedException {
         when:
         client.send(MARKET_DATA_REQUEST);
-        final FixMessage fixMessage = server.discardUntilExpected(MsgTypes.MarketDataRequest, "55=GBP/USD|55=AUD/USD");
+        final FixMessage fixMessage = server.discardUntil(MsgTypes.MarketDataRequest, "55=GBP/USD|55=AUD/USD");
 
         then:
         assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
@@ -110,7 +106,7 @@ public class MatchingSessionTest extends Specification{
         expect:
         client.send(MARKET_DATA_REQUEST);
         try{
-            server.discardUntilExpected(MsgTypes.MarketDataRequest, "[MsgType]35=D[NEWORDERSINGLE]");
+            server.discardUntil(MsgTypes.MarketDataRequest, "[MsgType]35=D[NEWORDERSINGLE]");
         } catch(final AssertionError e){
             assertTrue(e.getMessage().contains("Found message that matches"));
             assertTrue(e.getMessage().contains("But message does not match"));
@@ -129,7 +125,7 @@ public class MatchingSessionTest extends Specification{
     public void testMatchOnAFewFields_passes_matchOnAFewFields() throws InterruptedException {
         when:
         client.send(MARKET_DATA_REQUEST);
-        final FixMessage fixMessage = server.discardUntilExpected(
+        final FixMessage fixMessage = server.discardUntil(
                 "[MsgType]35=V[MARKETDATAREQUEST]|" +
                 "[MDReqID]262=AASDJKG790|" +
                 "[SubscriptionRequestType]263=0[SNAPSHOT]|");
@@ -142,7 +138,7 @@ public class MatchingSessionTest extends Specification{
         when:
         client.send(NEW_ORDER_SINGLE);
         client.send(MARKET_DATA_REQUEST);
-        final FixMessage fixMessage = server.discardUntilExpected(MARKET_DATA_REQUEST);
+        final FixMessage fixMessage = server.discardUntil(MARKET_DATA_REQUEST);
 
         then:
         assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
@@ -151,7 +147,7 @@ public class MatchingSessionTest extends Specification{
     public void testDiscardUntilExpected_passes_matchOnWholeExpression() throws InterruptedException {
         when:
         client.send(MARKET_DATA_REQUEST);
-        final FixMessage fixMessage = server.discardUntilExpected(MARKET_DATA_REQUEST);
+        final FixMessage fixMessage = server.discardUntil(MARKET_DATA_REQUEST);
 
         then:
         assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
@@ -169,7 +165,7 @@ public class MatchingSessionTest extends Specification{
         when:
         client.send(NEW_ORDER_SINGLE);
         client.send(MARKET_DATA_REQUEST);
-        final FixMessage fixMessage = server.discardUntilMsgTypeReceived(MsgTypes.MarketDataRequest);
+        final FixMessage fixMessage = server.discardUntil(MsgTypes.MarketDataRequest);
 
         then:
         assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
