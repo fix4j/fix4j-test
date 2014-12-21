@@ -83,6 +83,23 @@ public abstract class AbstractContextFactory implements ContextFactory {
         return properties;
     }
 
+    /**
+     * The properties returned from this method come from a few different sources.  Sources are listed here.  Sources
+     * are listed in order of priority, meaning that is a property is specified in both the first source and the second source, the property
+     * value from the first source will be used.
+     *
+     * - Test properties passed into this method
+     * - System properties prefixed with "fix4j" or "FIX4J".  See: {@link org.fix4j.test.properties.SystemPropertySource}
+     * - Environment variables prefixed with "fix4j" or "FIX4J". See: {@link org.fix4j.test.properties.SystemEnvVariablePropertySource}
+     * - Default values specified in {@link org.fix4j.test.properties.PropertyKeysAndDefaultValues}
+     *
+     * If this method is overridden it is entirely up to the overriding method to define which sources and what
+     * order of priority to use.  The implementing code may add a PropertySource which takes properties from entirely different source
+     * e.g. a properties file.  (See the examples.)
+     *
+     * @param testProperties These are the properties that the test code has give specifically for this test.
+     * @return Properties which will be used by fix4j-test
+     */
     protected ApplicationProperties createApplicationProperties(final PropertySource testProperties) {
         final CompositePropertyMap.Builder builder = CompositePropertyMap.Builder.create("ALL");
         if(testProperties != null) builder.addLast(testProperties);
@@ -92,6 +109,22 @@ public abstract class AbstractContextFactory implements ContextFactory {
         return builder.build();
     }
 
+    /**
+     * Outbound processors are called for every outbound {@link org.fix4j.test.fixmodel.FixMessage} that is sent from a test.
+     * Processors allow a point to see and/or modify the outgoing FixMessage after the message leaves the test code,
+     * and before it reaches the fix layer.
+     *
+     * A processor can effectively modify the message being sent from the test code by returning a modified FixMessage
+     * from the {@link org.fix4j.test.plumbing.Processor#process} method.
+     *
+     * If the processor wishes to stop a FixMessage from being sent, it can return null from the {@link org.fix4j.test.plumbing.Processor#process}
+     * method.
+     *
+     * A processor does not have to modify or stop the FixMessage.  As in the case of the {@link org.fix4j.test.processors.OutboundRecentMessageProcessor},
+     * the fixMessage is simply recorded for later use.
+     *
+     * Override this method if you wish to alter the list of outbound processors.
+     */
     protected List<Processor<FixMessage>> createOutboundProcessors(final ApplicationProperties properties) {
         final MessageFlagRules outboundMessageFlagWarningRules = createOutboundMessageFlagWarningRules();
         final MessageFlagRules outboundMessageFlagFailureRules = createOutboundMessageFlagFailureRules();
@@ -100,6 +133,22 @@ public abstract class AbstractContextFactory implements ContextFactory {
         return Arrays.asList(outboundRecentMessageProcessor, outboundMessageFlagFailureProcessor);
     }
 
+    /**
+     * Inbound processors are called for every inbound {@link org.fix4j.test.fixmodel.FixMessage} that is received from the fix layer.
+     * Processors allow a point to see and/or modify the inbound FixMessage after the message leaves the fix layer, and before it reaches
+     * the test code.
+     *
+     * A processor can effectively modify the message being sent to the test code by returning a modified FixMessage
+     * from the {@link org.fix4j.test.plumbing.Processor#process} method.
+     *
+     * If the processor wishes to stop a FixMessage from being received by the test code, then it can return null from
+     * the {@link org.fix4j.test.plumbing.Processor#process method. See: {@link org.fix4j.test.processors.InboundIgnoreProcessor}
+     *
+     * A processor does not have to modify or stop the FixMessage.  As in the case of the {@link org.fix4j.test.processors.InboundRecentMessageProcessor},
+     * the fixMessage is simply recorded for later use.
+     *
+     * Override this method if you wish to alter the list of outbound processors.
+     */
     protected List<Processor<FixMessage>> createInboundProcessors(final ApplicationProperties properties) {
         final FixMessageMatcher defaultMessagesToIgnore = createMatcherForMessagesToIgnore(fixSpecification, properties);
         final MessageFlagRules inboundMessageFlagWarningRules = createInboundMessageFlagWarningRules();
@@ -111,6 +160,22 @@ public abstract class AbstractContextFactory implements ContextFactory {
         return Arrays.asList(inboundIgnoreProcessor, inboundRecentMessageProcessor, inboundMessageFlagFailureProcessor);
     }
 
+    /**
+     * Creates a matcher to apply to each incoming FixMessage.  If the matcher matches a given fixMessage, that message is
+     * effectively dropped and the test client will not see that message.
+     *
+     * The method below creates a simple matcher which matches on the pattern given by PropertyKeysAndDefaultValues.DEFAULT_MESSAGES_TO_IGNORE,
+     * which at time of writing is "35=0".  35=0 is messageType=Heartbeat, so by default, all heartbeat messages will be ignored/dropped and
+     * will not be sent to the test code.
+     *
+     * If the test code wishes to receive heartbeat messages, there are two approaches:
+     * 1. Configure fix4j.default.messages.to.ignore property to be blank. (zero length string).
+     * 2. Override this message matcher to return a matcher which does NOT match on heartbeats.  e.g. {@link org.fix4j.test.matching.matchers.MatchNoMessagesMatcher}
+     *
+     * @param fixSpecification
+     * @param properties
+     * @return
+     */
     protected FixMessageMatcher createMatcherForMessagesToIgnore(final FixSpecification fixSpecification, final ApplicationProperties properties) {
         final MessageExpressionParser parser = new MessageExpressionParser(fixSpecification);
         return parser.parse(properties.getAsString(PropertyKeysAndDefaultValues.DEFAULT_MESSAGES_TO_IGNORE.getKey()));

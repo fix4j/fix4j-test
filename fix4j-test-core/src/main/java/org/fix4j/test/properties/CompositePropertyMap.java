@@ -75,6 +75,9 @@ public class CompositePropertyMap implements PropertySource, ApplicationProperti
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
+        sb.append("\n**************************************\n");
+        sb.append("Properties\n");
+        sb.append("**************************************\n");
         for (final String key : properties.keySet()) {
             sb.append(key).append("=").append(properties.get(key)).append("\n");
         }
@@ -176,6 +179,13 @@ public class CompositePropertyMap implements PropertySource, ApplicationProperti
             this.sourceName = sourceName;
         }
 
+        /**
+         * Add the given property source object with lowest precedence of all sources added
+         * so far.
+         *
+         * @param propertySource
+         * @return this
+         */
         public Builder addLast(final PropertySource propertySource){
             if(propertySource != null) {
                 for (final String key : propertySource.getProperties().keySet()) {

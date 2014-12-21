@@ -13,4 +13,15 @@ public interface FixEngineSession extends FixSession, Consumer<FixMessage> {
     void shutdown();
     void shutdown(boolean force);
     void startup();
+
+    /**
+     * Overriding for documentation purposes only.
+     *
+     * This accept method will be called for OUTBOUND fix messages.  i.e. message which are coming
+     * from the test client, and need to go out to the "network".
+     *
+     * @param fixMessage
+     */
+    @Override
+    void accept(FixMessage fixMessage);
 }

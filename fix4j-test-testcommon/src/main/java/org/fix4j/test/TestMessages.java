@@ -1,4 +1,4 @@
-package org.fix4j.test.examples;
+package org.fix4j.test;
 
 /**
  * User: ben
@@ -12,12 +12,12 @@ public class TestMessages {
         "[SubscriptionRequestType]263=0[SNAPSHOT]|" +
         "[MarketDepth]264=20|" +
         "[NoMDEntryTypes]267=2|" +
-        "[MDEntryType]269=0[BID]|" +
-        "[MDEntryType]269=1[OFFER]|" +
+            "[MDEntryType]269=0[BID]|" +
+            "[MDEntryType]269=1[OFFER]|" +
         "[NoRelatedSym]146=3|" +
-        "[Symbol]55=GBP/USD|" +
-        "[Symbol]55=AUD/USD|" +
-        "[Symbol]55=USD/JPY|";
+            "[Symbol]55=GBP/USD|" +
+            "[Symbol]55=AUD/USD|" +
+            "[Symbol]55=USD/JPY|";
 
     public final static String NEW_ORDER_SINGLE =
         "[MsgType]35=D[NEWORDERSINGLE]|" +

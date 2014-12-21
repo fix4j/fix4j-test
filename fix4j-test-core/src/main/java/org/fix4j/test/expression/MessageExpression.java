@@ -3,6 +3,7 @@ package org.fix4j.test.expression;
 import org.fix4j.test.fixmodel.BaseFixMessageBuilder;
 import org.fix4j.test.fixmodel.Field;
 import org.fix4j.test.fixmodel.FixMessage;
+import org.fix4j.test.fixmodel.RegexMatchingField;
 import org.fix4j.test.fixspec.FieldType;
 import org.fix4j.test.fixspec.FixSpecification;
 import org.fix4j.test.fixspec.Tag;
@@ -36,7 +37,7 @@ public class MessageExpression implements FixMessageMatcher {
     }
 
     public static MessageExpression forAnyValueOfField(final FieldType fieldType){
-        return new MessageExpression(new Field(fieldType, ".*"));
+        return new MessageExpression(new RegexMatchingField(fieldType, "/.*/"));
     }
 
     public FixMessage asMessage(final FixSpecification fixSpecification){
@@ -82,9 +83,7 @@ public class MessageExpression implements FixMessageMatcher {
 
             if (expected != null) {
                 final FieldType fieldType = actual.getFieldType();
-                final boolean matches = actual.getValue().matches(expected.getValue());
-
-
+                final boolean matches = expected.matchesValueOf(actual);
 
                 if(!matches) matchesOverall = false;
                 matchReports.add(new FixFieldMatchResult(matches, fieldType, actual.getValue(), expected.getValue()));

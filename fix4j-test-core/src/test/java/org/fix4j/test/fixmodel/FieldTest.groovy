@@ -8,39 +8,22 @@ import spock.lang.Specification
  * Time: 5:32 PM
  */
 class FieldTest extends Specification {
-    def "test IsValueRegex"() {
+
+    def "test matchesValueOf"(){
         expect:
-        assert ! new Field(null, "blah").isValueRegex();
-        assert ! new Field(null, null).isValueRegex();
-        assert new Field(null, "/asdf/").isValueRegex();
+        assert matches("blah", "blah");
+        assert !matches("\\w+", "asdfasdf");
+        assert matches("", "");
+        assert matches(null, "");
+        assert matches("", null);
+        assert matches(null, null);
+        assert !matches("asdf", null);
+        assert !matches(null, "asdf");
     }
 
-    def "test IsValueLiteral"() {
-        expect:
-        assert new Field(null, "blah").isValueLiteral();
-        assert new Field(null, null).isValueLiteral();
-        assert ! new Field(null, "/asdf/").isValueLiteral();
-    }
-
-    def "test GetValueRegex"() {
-        expect:
-        assert new Field(null, "/asdf/").getValueRegex() == "asdf"
-        assert new Field(null, "/asdf//asdf/asdf/asdf///").getValueRegex() == "asdf//asdf/asdf/asdf//"
-    }
-
-    def "test GetValueRegex - exception when not regex"() {
-        when:
-        assert new Field(null, "blah").getValueRegex()
-
-        then:
-        thrown IllegalArgumentException
-    }
-
-    def "test GetValueRegex - exception when field value is null"() {
-        when:
-        assert new Field(null, null).getValueRegex()
-
-        then:
-        thrown IllegalArgumentException
+    boolean matches(final String expected, final String actual) {
+        final Field expectedField = new Field(null, expected);
+        final Field actualField = new Field(null, actual);
+        return expectedField.matchesValueOf(actualField);
     }
 }

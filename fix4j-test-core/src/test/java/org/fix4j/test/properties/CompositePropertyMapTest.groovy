@@ -19,11 +19,11 @@ class CompositePropertyMapTest extends Specification {
                 .addLast(source1).addLast(source2).addLast(source3).build();
 
         expect:
-        assert map.toString() ==
+        assert map.toString().contains(
                 "    one=blah1 [firstSource]\n" +
                 "    two=blah2 [firstSource]\n" +
                 "    three=dog3 [secondSource]\n" +
-                "    four=cat4 [thirdSource]\n";
+                "    four=cat4 [thirdSource]\n");
     }
 
     def "test Composite behaviour"() {

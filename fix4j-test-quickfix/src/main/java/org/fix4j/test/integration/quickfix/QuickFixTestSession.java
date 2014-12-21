@@ -25,39 +25,44 @@ public class QuickFixTestSession implements FixEngineSession {
     private final static Logger LOGGER = LoggerFactory.getLogger(TestSessionHelper.class);
     private final QuickFixApplication application;
     private final SessionID sessionId;
-    private final Consumer<FixMessage> quickFixConverter;
+    private final Consumer<FixMessage> outboundConsumer;
     private final Connector connector;
 
-    public QuickFixTestSession(final Consumer<FixMessage> toTestFrameworkConsumer, final SessionID sessionId, final QuickFixApplication quickFixApplication, final FixSpecification fixSpecification, final Connector connector) {
+    public QuickFixTestSession(final Consumer<FixMessage> toTestClient, final SessionID sessionId, final QuickFixApplication quickFixApplication, final FixSpecification fixSpecification, final Connector connector) {
         this.sessionId = sessionId;
         this.connector = connector;
 
-        //Messages FROM:quickfix -> TO:testFramework
+        //Messages FROM:quickfix -> TO:testFramework, i.e. INBOUND
         final FromQuickFixMessageConverter fromQuickFixMessageConverter = new FromQuickFixMessageConverter(fixSpecification);
-        final Consumer<quickfix.Message> fromQuickFixConvertingPipe = fromQuickFixMessageConverter.convertAndSendMessagesTo(toTestFrameworkConsumer);
+        final Consumer<quickfix.Message> fromQuickFixConvertingPipe = fromQuickFixMessageConverter.convertAndSendMessagesTo(toTestClient);
         this.application = quickFixApplication;
         quickFixApplication.register(sessionId, fromQuickFixConvertingPipe);
 
-        //Messages FROM:testFramework -> TO:quickfix
+        //Messages FROM:testFramework -> TO:quickfix, i.e. OUTBOUND
+        this.outboundConsumer = getOutboundConsumer(sessionId, fixSpecification);
+    }
+
+    public Consumer<FixMessage> getOutboundConsumer(final SessionID sessionId, final FixSpecification fixSpecification) {
         final MessageConverter<FixMessage, Message> toQuickFixMessageConverter = new ToQuickFixMessageConverter(fixSpecification);
+        final BlockingPipe<Message> outboundQueueBetweenFixSessionAndFixApplication = new BlockingPipe<Message>("queueBetweenThisFixSessionAndFixApplication");
 
-        final BlockingPipe<Message> queueBetweenThisFixSessionAndFixApplication = new BlockingPipe<Message>("queueBetweenThisFixSessionAndFixApplication");
-
-        final Consumer<Message> toQuickfixApplication = new Consumer<Message>() {
+        final Consumer<Message> fixApplicationConsumer = new Consumer<Message>() {
             @Override
             public void accept(final Message message) {
                 application.send(message, sessionId);
             }
         };
-        final Consumer<FixMessage> toQuickFixConvertingPipe = toQuickFixMessageConverter.convertAndSendMessagesTo(queueBetweenThisFixSessionAndFixApplication);
+        final Consumer<FixMessage> toQuickFixConvertingPipe = toQuickFixMessageConverter.convertAndSendMessagesTo(outboundQueueBetweenFixSessionAndFixApplication);
 
-        quickFixConverter = new Consumer<FixMessage>() {
+        final Consumer<FixMessage> outboundConsumer = new Consumer<FixMessage>() {
             public void accept(final FixMessage fixMessage) {
                 toQuickFixConvertingPipe.accept(fixMessage);
             }
         };
 
-        new ShuntFromSupplierToConsumer<>("fromTestFrameworkSupplier-to-simpleMessageConsumerToQuickFixConverter", queueBetweenThisFixSessionAndFixApplication, toQuickfixApplication).start();
+        new ShuntFromSupplierToConsumer<>("fromTestFrameworkSupplier-to-simpleMessageConsumerToQuickFixConverter", outboundQueueBetweenFixSessionAndFixApplication, fixApplicationConsumer).start();
+
+        return outboundConsumer;
     }
 
     @Override
@@ -74,7 +79,7 @@ public class QuickFixTestSession implements FixEngineSession {
 
     @Override
     public void accept(final FixMessage fixMessage) {
-        quickFixConverter.accept(fixMessage);
+        outboundConsumer.accept(fixMessage);
     }
 
     @Override

@@ -2,10 +2,11 @@ package org.fix4j.test.examples.config;
 
 import org.fix4j.spec.fix50sp2.MsgTypes;
 import org.fix4j.test.DefaultContextFactory;
-import org.fix4j.test.examples.TestMessages;
+import org.fix4j.test.TestMessages;
 import org.fix4j.test.fixmodel.FixMessage;
 import org.fix4j.test.plumbing.Processor;
 import org.fix4j.test.properties.ApplicationProperties;
+import org.fix4j.test.session.ContextFactory;
 import org.fix4j.test.session.FixConnectionMode;
 import org.fix4j.test.session.FixSessionId;
 import org.fix4j.test.session.MatchingSession;
@@ -23,30 +24,34 @@ public class CustomInboundProcessorWhichDropsAMessage {
     private MatchingSession client;
     private MatchingSession server;
 
-    @Test
-    public void test() {
-        //Here we wire in the additional processor
-        final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory(){
-            @Override
-            protected List<Processor<FixMessage>> createInboundProcessors(final ApplicationProperties properties) {
-                //Get the default inboundProcessors from the super class
-                final List<Processor<FixMessage>> inboundProcessors = new ArrayList<>(super.createInboundProcessors(properties));
+    private ContextFactory contextFactory = new DefaultContextFactory() {
+        @Override
+        protected List<Processor<FixMessage>> createInboundProcessors(final ApplicationProperties properties) {
+            //Get the default inboundProcessors from the super class
+            final List<Processor<FixMessage>> inboundProcessors = new ArrayList<>(super.createInboundProcessors(properties));
 
-                //Add our own processor to raise a failure if a new order is sent
-                inboundProcessors.add(new Processor<FixMessage>() {
-                    @Override
-                    public FixMessage process(final FixMessage message) {
-                        if (message.isOfType(MsgTypes.NewOrderSingle)) {
-                            System.out.println("Dropping this message:" + message);
-                            return null;
-                        } else {
-                            return message;
-                        }
+            //Add our own processor to raise a failure if a new order is sent
+            inboundProcessors.add(new Processor<FixMessage>() {
+                @Override
+                public FixMessage process(final FixMessage message) {
+                    if (message.isOfType(MsgTypes.NewOrderSingle)) {
+                        System.out.println("Dropping this message:" + message);
+                        return null;
+                    } else {
+                        return message;
                     }
-                });
-                return inboundProcessors;
-            }
-        });
+                }
+            });
+            return inboundProcessors;
+        }
+    };
+
+
+    @Test
+    public void runTest() {
+        //Here we wire in the additional processor
+        final TestSessionHelper helper = new TestSessionHelper(contextFactory);
+
 
         server = helper.createMatchingSession(new FixSessionId("FIX.4.4", "SERVER_COMP_ID", "CLIENT_COMP_ID"), FixConnectionMode.ACCEPTOR);
         client = helper.createMatchingSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR);

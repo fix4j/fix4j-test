@@ -33,7 +33,8 @@ public class SpecifyingTestProperties {
         System.setProperty(QuickFixProperties.RECONNECT_INTERVAL.getKey(), "11");
 
         final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory());
-        //Continue writing test case...
+        assertEquals("11111", helper.getProperties().getAsString(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS));
+        assertEquals("11", helper.getProperties().getAsString(QuickFixProperties.RECONNECT_INTERVAL));
     }
 
     @Test
@@ -43,7 +44,8 @@ public class SpecifyingTestProperties {
         properties.put(QuickFixProperties.RECONNECT_INTERVAL.getKey(), "22");
 
         final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory(properties));
-        //Continue writing test case...
+        assertEquals("22222", helper.getProperties().getAsString(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS));
+        assertEquals("22", helper.getProperties().getAsString(QuickFixProperties.RECONNECT_INTERVAL));
     }
 
     @Test
@@ -52,6 +54,7 @@ public class SpecifyingTestProperties {
         properties.load(this.getClass().getResourceAsStream("/foo.properties"));
 
         final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory(properties));
-        //Continue writing test case...
+        assertEquals("33333", helper.getProperties().getAsString(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS));
+        assertEquals("33", helper.getProperties().getAsString(QuickFixProperties.RECONNECT_INTERVAL));
     }
 }

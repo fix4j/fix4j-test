@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * User: ben
@@ -25,21 +26,6 @@ public class Field implements FieldSource, Part, PrettyPrintable {
 
     public String getValue() {
         return value;
-    }
-
-    public boolean isValueRegex(){
-        return value != null && value.startsWith("/") && value.endsWith("/");
-    }
-
-    public boolean isValueLiteral(){
-        return !isValueRegex();
-    }
-
-    public String getValueRegex(){
-        if(!isValueRegex()){
-            throw new IllegalArgumentException("Value is not a regex!  Regex must start and end with a foward slash '/'.  e.g. /.*/  Actual value:" + value);
-        }
-        return value.substring(1,value.length() - 1);
     }
 
     @Override
@@ -139,6 +125,21 @@ public class Field implements FieldSource, Part, PrettyPrintable {
     public void assertValueEquals(final double dbl) {
         if(!this.value.equals(String.valueOf(dbl))){
             throw new AssertionError("Actual value '" + this.value + "' does not equal '" + dbl + "'");
+        }
+    }
+
+    public boolean matchesValueOf(final Field actual) {
+        //If both values are null or zero length
+        if((this.getValue() == null || this.getValue().length() == 0) && (actual.getValue() == null || actual.getValue().length() == 0)){
+            return true;
+
+        //If only one of the values is null or zero length
+        } else if((this.getValue() == null || this.getValue().length() == 0) || (actual.getValue() == null || actual.getValue().length() == 0)){
+            return false;
+
+        //Otherwise check actual value
+        } else {
+            return this.getValue().equals(actual.getValue());
         }
     }
 }

@@ -78,7 +78,7 @@ public class MatchingSessionTest extends Specification{
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_passes_wildcard() throws InterruptedException {
         when:
         client.send(MARKET_DATA_REQUEST);
-        final FixMessage fixMessage = server.discardUntil(MsgTypes.MarketDataRequest, "35=.*");
+        final FixMessage fixMessage = server.discardUntil(MsgTypes.MarketDataRequest, "35=/.*/");
 
         then:
         assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;
@@ -87,7 +87,7 @@ public class MatchingSessionTest extends Specification{
     public void testDiscardUntilExpected_matchOnMsgTypeThenFullExpression_passes_twoRegexes() throws InterruptedException {
         when:
         client.send(MARKET_DATA_REQUEST);
-        final FixMessage fixMessage = server.discardUntil(MsgTypes.MarketDataRequest, "262=AASD[JKG]+79\\d");
+        final FixMessage fixMessage = server.discardUntil(MsgTypes.MarketDataRequest, "262=/AASD[JKG]+79\\d/");
 
         then:
         assert fixMessage.getTypeOfMessage() == MsgTypes.MarketDataRequest;

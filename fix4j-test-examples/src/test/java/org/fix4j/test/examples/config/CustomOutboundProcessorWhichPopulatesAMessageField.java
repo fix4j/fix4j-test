@@ -4,11 +4,12 @@ import org.fix4j.spec.fix50sp2.FieldTypes;
 import org.fix4j.spec.fix50sp2.MsgTypes;
 import org.fix4j.spec.fix50sp2.fieldtype.OnBehalfOfCompID;
 import org.fix4j.test.DefaultContextFactory;
-import org.fix4j.test.examples.TestMessages;
+import org.fix4j.test.TestMessages;
 import org.fix4j.test.fixmodel.BaseFixMessage;
 import org.fix4j.test.fixmodel.FixMessage;
 import org.fix4j.test.plumbing.Processor;
 import org.fix4j.test.properties.ApplicationProperties;
+import org.fix4j.test.session.ContextFactory;
 import org.fix4j.test.session.FixConnectionMode;
 import org.fix4j.test.session.FixSessionId;
 import org.fix4j.test.session.MatchingSession;
@@ -26,29 +27,31 @@ public class CustomOutboundProcessorWhichPopulatesAMessageField {
     private MatchingSession client;
     private MatchingSession server;
 
-    @Test
-    public void createCustomOutboundProcessor() {
-        //Here we wire in the additional processor
-        final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory(){
-            @Override
-            protected List<Processor<FixMessage>> createOutboundProcessors(final ApplicationProperties properties) {
-                //Get the default outboundProcessors from the super class
-                final List<Processor<FixMessage>> outboundProcessors = new ArrayList<>(super.createOutboundProcessors(properties));
+    private ContextFactory contextFactory = new DefaultContextFactory() {
+        @Override
+        protected List<Processor<FixMessage>> createOutboundProcessors(final ApplicationProperties properties) {
+            //Get the default outboundProcessors from the super class
+            final List<Processor<FixMessage>> outboundProcessors = new ArrayList<>(super.createOutboundProcessors(properties));
 
-                //Add our own one
-                outboundProcessors.add(new Processor<FixMessage>() {
-                    @Override
-                    public FixMessage process(final FixMessage message) {
-                        return new BaseFixMessage(
+            //Add our own one
+            outboundProcessors.add(new Processor<FixMessage>() {
+                @Override
+                public FixMessage process(final FixMessage message) {
+                    return new BaseFixMessage(
                             message.getTypeOfMessage(),
                             message.getHeader().withField(OnBehalfOfCompID.withValue("MyCompID")),
                             message.getBody(),
                             message.getTrailer());
-                    }
-                });
-                return outboundProcessors;
-            }
-        });
+                }
+            });
+            return outboundProcessors;
+        }
+    };
+
+    @Test
+    public void runTest() {
+        //Here we wire in the additional processor
+        final TestSessionHelper helper = new TestSessionHelper(contextFactory);
 
         server = helper.createMatchingSession(new FixSessionId("FIX.4.4", "SERVER_COMP_ID", "CLIENT_COMP_ID"), FixConnectionMode.ACCEPTOR);
         client = helper.createMatchingSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR);

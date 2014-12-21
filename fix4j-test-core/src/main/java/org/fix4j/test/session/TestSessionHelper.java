@@ -2,7 +2,9 @@ package org.fix4j.test.session;
 
 import org.fix4j.test.fixmodel.FixMessage;
 import org.fix4j.test.fixmodel.Handler;
+import org.fix4j.test.fixspec.FixSpecification;
 import org.fix4j.test.plumbing.Consumer;
+import org.fix4j.test.properties.ApplicationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,5 +84,13 @@ public class TestSessionHelper {
 
     public FixMessage parse(final String expression) {
         return contextFactory.getFixSpecification().parse(expression);
+    }
+
+    public ApplicationProperties getProperties(){
+        return contextFactory.getProperties();
+    }
+
+    public FixSpecification getFixSpecification(){
+        return contextFactory.getFixSpecification();
     }
 }

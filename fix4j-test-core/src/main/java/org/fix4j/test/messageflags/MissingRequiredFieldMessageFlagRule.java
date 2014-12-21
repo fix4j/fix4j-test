@@ -6,7 +6,7 @@ import org.fix4j.test.fixmodel.Group;
 import org.fix4j.test.fixspec.FieldAndGroupTypes;
 import org.fix4j.test.fixspec.GroupType;
 import org.fix4j.test.fixspec.MemberFieldType;
-import org.fix4j.test.matching.matchers.AnyMsgMatcher;
+import org.fix4j.test.matching.matchers.MatchEveryMessageMatcher;
 import org.fix4j.test.matching.matchers.FixMessageMatcher;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class MissingRequiredFieldMessageFlagRule implements MessageFlagRule {
     private final FixMessageMatcher matcher;
 
     public MissingRequiredFieldMessageFlagRule() {
-        matcher = new AnyMsgMatcher();
+        matcher = new MatchEveryMessageMatcher();
     }
 
     @Override

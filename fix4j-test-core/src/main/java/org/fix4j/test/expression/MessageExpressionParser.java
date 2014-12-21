@@ -1,6 +1,7 @@
 package org.fix4j.test.expression;
 
 import org.fix4j.test.fixmodel.Field;
+import org.fix4j.test.fixmodel.RegexMatchingField;
 import org.fix4j.test.fixspec.FieldType;
 import org.fix4j.test.fixmodel.PrettyStripper;
 import org.fix4j.test.fixspec.FixSpecification;
@@ -62,7 +63,11 @@ public class MessageExpressionParser {
         final String fieldTypeStr = fixFieldParts[0];
         final FieldType fieldType = parseFieldType(fieldTypeStr);
         final String fieldValue = parseFieldValue(fieldType, fixFieldParts[1]);
-        return new Field(fieldType, fieldValue);
+        if(RegexMatchingField.containsRegexForwardSlashes(fieldValue)){
+            return new RegexMatchingField(fieldType, fieldValue);
+        } else {
+            return new Field(fieldType, fieldValue);
+        }
     }
 
     public String parseFieldValue(final FieldType fieldType, final String fieldValueStr) {
