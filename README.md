@@ -3,6 +3,8 @@ fix4j-test is a library to assist in testing of applications using FIX protocol.
 
 It's written in Java and is designed to be used along side your test frameworks of choice.  e.g. JUnit, Spock, TestNG
 
+Contact: [fix4j.test@gmail.com](mailto:fix4j.test@gmail.com)
+
 ##Sending a fix message to your application
 The example below shows how to send fix messages to your application using fix4j-test:
 
