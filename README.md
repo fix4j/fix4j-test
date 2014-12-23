@@ -19,6 +19,9 @@ In the example below, ```expect``` will throw an ```AssertionError``` if the nex
 session.expect("35=X|262=/AASDJKG\d+/);
 ```
 
+##Quickstart/Example
+[See here for an example showing the sending and receiving of FIX messages.](https://github.com/fix4j/fix4j-test/blob/master/fix4j-test-examples/src/test/java/org/fix4j/test/examples/clients/MatchingSessionTest.java).
+
 ##Using more descriptive message formats
 You may have noticed that the format for sending a message and matching an incoming message is quite similar.  They actually use the same underlying code base.  fix4j-test provides more descriptive message formats to make our tests more readable.  
 
@@ -65,6 +68,8 @@ Or Ctrl-A delimiters:
 ```java
 session.send("35=V^A262=AASDJKG790^A263=0^A264=20^A267=2^A269=0^A269=1^A146=3^A55=GBP/USD^A64=SP^A55=AUD/USD^A64=SP^A55=USD/JPY^A64=SP");
 ```
+[See here for an example showing the usage of various message formats.](https://github.com/fix4j/fix4j-test/blob/master/fix4j-test-examples/src/test/java/org/fix4j/test/examples/clients/VariousMessageFormatsTest.java).
+
 ##Debugging your tests
 Debugging fix applications can often be difficult, given the asynchronous nature of the messaging combined with the obscure format of fix.
 fix4j-test attempts to address this issue by providing detailed error messages when a test fails.  In the example below, we were expecting a MarketDataRequest with one of the symbols being GBP/XXX.
