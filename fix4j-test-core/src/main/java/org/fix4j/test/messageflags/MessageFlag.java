@@ -10,9 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * User: ben
- * Date: 1/10/2014
- * Time: 6:08 AM
  */
 public class MessageFlag implements PrettyPrintable {
     private final FixMessage fixMessage;

@@ -1,5 +1,7 @@
 package org.fix4j.test.util;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -161,5 +163,27 @@ public class StringUtils {
             throw new IllegalArgumentException("Ending in '" + endingIn + "' must not be longer than the actual indent: '" + Consts.INDENT + "'");
         }
         return Consts.INDENT.substring(endingIn.length()) + endingIn;
+    }
+
+    public static Map<String, String> parseMap(final String propertiesStr){
+        final String[] keyValuePairs = propertiesStr.split(",");
+        final Map<String, String> map = new LinkedHashMap<>();
+        for (final String keyValuePair : keyValuePairs) {
+            final String[] keyValue = keyValuePair.trim().split(":");
+            map.put(keyValue[0].trim(), keyValue[1].trim());
+        }
+        return map;
+    }
+
+    public static Map<String, String> listToMap(final String ... strings) {
+        final Map<String, String> map = new LinkedHashMap<>();
+        final Iterator<String> stringIterator = Arrays.asList(strings).iterator();
+
+        while(stringIterator.hasNext()){
+            final String key = stringIterator.next();
+            final String value = stringIterator.next();
+            map.put(key, value);
+        }
+        return map;
     }
 }

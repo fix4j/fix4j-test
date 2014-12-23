@@ -15,3 +15,4 @@
 
 FAQ
 Do I need to populate header fields when creating a message?
+Do tests have to be written in either groovy or junit?

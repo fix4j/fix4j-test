@@ -17,7 +17,6 @@ public class BlockingPipe<M> implements Consumer<M>, Supplier<M> {
     private final BlockingQueue<M> blockingQueue;
     private final String id;
 
-    //TODO option to use GUUIDs at some point for id's so don't have to specify
     public BlockingPipe(final String id) {
         this.id = id;
         this.blockingQueue = new LinkedBlockingQueue<M>();

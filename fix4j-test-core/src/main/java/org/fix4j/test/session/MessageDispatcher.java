@@ -31,7 +31,7 @@ public class MessageDispatcher implements Consumer<FixMessage> {
                 method.setAccessible(true);
                 final Invoker invoker = new Invoker(messageHandler, method);
                 final String methodName = method.getName();
-                final String handlerIsForMessageType = methodName.replace("on", "");
+                final String handlerIsForMessageType = methodName.replaceFirst("^on", "");
                 LOGGER.info("Registering handler for message type: " + handlerIsForMessageType);
                 final MsgType msgType = fixSpecification.getMsgTypeByName(handlerIsForMessageType);
                 if(msgType == null){
@@ -54,7 +54,7 @@ public class MessageDispatcher implements Consumer<FixMessage> {
     }
 
     private boolean matchesConventionOrAnnotation(Method method) {
-        return method.getName().equals("onMessage");
+        return method.getName().startsWith("on");
     }
 
     private class Invoker {
@@ -89,7 +89,7 @@ public class MessageDispatcher implements Consumer<FixMessage> {
                 propagate(e);
             }
         } else {
-            throw new IllegalArgumentException("Unsupported message type:" + fixMessage.getTypeOfMessage());
+            throw new IllegalArgumentException("Unsupported message type:" + fixMessage.getTypeOfMessage() + ". Methods have been found for MsgTypes:" + invokers.keySet() + " be sure to implement a method matching signature 'public void on" + fixMessage.getTypeOfMessage().getName() + "(FixMessage message)'");
         }
     }
 

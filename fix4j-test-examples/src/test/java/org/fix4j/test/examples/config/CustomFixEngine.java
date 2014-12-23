@@ -24,17 +24,16 @@ import static org.junit.Assert.assertEquals;
 /**
  * By default, fix4j-test uses QuickFix to send and receive messages.  QuickFix uses the fix
  * protocol.  The application under test doesn't need to be using QuickFix.  As long as it is compatible with
- * QuickFix, then all is good.
+ * the fix protocol, and with QuickFix, then all is good.
  *
  * However if the user has the need to test an application which is not compatible with QuickFix, then the
- * fix engine can be swapped out as per the example below.
+ * fix engine can be swapped out.  See the _very_ rudimentary example below.
  *
  * User: ben
  */
 public class CustomFixEngine {
     private MatchingSession client;
     private MatchingSession server;
-
 
     /**
      * Define a custom fix engine.
@@ -96,7 +95,7 @@ public class CustomFixEngine {
         //Here we wire in the additional processor
         final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory(){
             @Override
-            protected FixEngineSessionFactory createFixEngineSessionFactory(final FixSpecification fixSpecification, final ApplicationProperties properties) {
+            protected FixEngineSessionFactory createFixEngineSessionFactory(final FixSpecification fixSpecification, final ApplicationProperties applicationProperties) {
                 return new FixEngineSessionFactory() {
                     @Override
                     public FixEngineSession createSession(final FixSessionId sessionId, final FixConnectionMode connectionMode, final Consumer<FixMessage> consumerToTestClient) {
@@ -110,7 +109,7 @@ public class CustomFixEngine {
         client = helper.createMatchingSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR);
 
         //Send a MarketDataRequest
-        final FixMessage fixMessage = helper.parse(TestMessages.MARKET_DATA_REQUEST);
+        final FixMessage fixMessage = helper.parse(TestMessages.MARKET_DATA_REQUEST_1);
         client.send(fixMessage);
 
         //Wait for it to arrive at the server, all is good

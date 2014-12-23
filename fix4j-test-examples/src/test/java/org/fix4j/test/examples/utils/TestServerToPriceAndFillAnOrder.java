@@ -1,7 +1,8 @@
-package org.fix4j.test.examples.servers;
+package org.fix4j.test.examples.utils;
 
 import org.fix4j.spec.fix50sp2.MsgTypes;
 import org.fix4j.test.DefaultContextFactory;
+import org.fix4j.test.TestMessages;
 import org.fix4j.test.fixmodel.FixMessage;
 import org.fix4j.test.properties.PropertyKeysAndDefaultValues;
 import org.fix4j.test.session.FixConnectionMode;
@@ -14,16 +15,20 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertEquals;
 
 /**
- * User: ben
- * Date: 13/08/2014
- * Time: 8:57 PM
+ * Can be used by a client test to:
+ * --Receive a MarketDataRequest
+ * --Respond with a dummy price
+ * --Receive an order
+ * --Fill that order.
+ *
+ * Only runs through this sequence once.
  */
-public class TestServerToPriceAndFillOrders implements Runnable {
-    private final static Logger LOGGER = LoggerFactory.getLogger(TestServerToPriceAndFillOrders.class);
+public class TestServerToPriceAndFillAnOrder implements Runnable {
+    private final static Logger LOGGER = LoggerFactory.getLogger(TestServerToPriceAndFillAnOrder.class);
     private MatchingSession server;
 
     public static void main(String[] args) {
-        new Thread(new TestServerToPriceAndFillOrders()).start();
+        new Thread(new TestServerToPriceAndFillAnOrder()).start();
     }
 
     public void run() {
@@ -37,29 +42,7 @@ public class TestServerToPriceAndFillOrders implements Runnable {
         LOGGER.info("Got MDR: " + marketDataRequest.toPrettyString());
         LOGGER.info("Sending back price.");
         
-        server.send("35=X|" +
-                "262=request123|" +
-                "268=4|" +
-
-                "279=0|" +
-                "269=0|" +
-                "55=AUD/USD|" +
-                "270=1.12345|" +
-
-                "279=0|" +
-                "269=1|" +
-                    "55=AUD/USD|" +
-                "270=1.12355|" +
-
-                "279=0|" +
-                "269=0|" +
-                    "55=AUD/USD|" +
-                "270=1.12340|" +
-
-                "279=0|" +
-                "269=1|" +
-                    "55=AUD/USD|" +
-                "270=1.12360|");
+        server.send(TestMessages.MARKET_DATA_INCREMENTAL_REFRESH);
 
         LOGGER.info("Sent price, waiting for order...");
         final FixMessage newOrder = server.discardUntil(MsgTypes.NewOrderSingle);

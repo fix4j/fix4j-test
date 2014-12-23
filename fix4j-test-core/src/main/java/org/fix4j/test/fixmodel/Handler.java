@@ -7,5 +7,5 @@ import org.fix4j.test.fixspec.MsgType;
  * Date: 18/11/14
  * Time: 6:15 AM
  */
-public interface Handler<T extends MsgType> {
+public interface Handler{
 }

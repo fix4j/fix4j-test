@@ -12,19 +12,19 @@ import org.fix4j.test.plumbing.ShuntFromSupplierToConsumer;
  */
 public class ConsumerSession implements TestClientSession{
     private final SimpleOutboundSession outboundSession;
-    private final TestContext testContext;
+    private final SessionContext sessionContext;
 
-    public ConsumerSession(final TestContext testContext, final Consumer<FixMessage> toTestClient) {
-        new ShuntFromSupplierToConsumer<>("fromNetwork-to-testClient", testContext.sessionConnectors.inboundSupplier, toTestClient).start();
-        this.outboundSession = new SimpleOutboundSession(testContext.fixSpecification, testContext.sessionConnectors.outboundConsumer);
-        this.testContext = testContext;
+    public ConsumerSession(final SessionContext sessionContext, final Consumer<FixMessage> toTestClient) {
+        new ShuntFromSupplierToConsumer<>("fromNetwork-to-testClient", sessionContext.sessionConnectors.inboundSupplier, toTestClient).start();
+        this.outboundSession = new SimpleOutboundSession(sessionContext.fixSpecification, sessionContext.sessionConnectors.outboundConsumer);
+        this.sessionContext = sessionContext;
     }
 
     public void send(final String messageStr) {
         try {
             outboundSession.send(messageStr);
         } catch (final Failure failure) {
-            throw testContext.enrichFailureWithAdditionalReports(failure);
+            throw sessionContext.enrichFailureWithAdditionalReports(failure);
         }
     }
 
@@ -32,22 +32,22 @@ public class ConsumerSession implements TestClientSession{
         try {
             outboundSession.send(message);
         } catch (final Failure failure) {
-            throw testContext.enrichFailureWithAdditionalReports(failure);
+            throw sessionContext.enrichFailureWithAdditionalReports(failure);
         }
     }
 
     @Override
     public void shutdown(){
-        testContext.fixEngineSession.shutdown();
+        sessionContext.fixEngineSession.shutdown();
     }
 
     @Override
     public FixSpecification getFixSpecification() {
-        return testContext.fixSpecification;
+        return sessionContext.fixSpecification;
     }
 
     @Override
     public FixSessionId getSessionId() {
-        return testContext.fixSessionId;
+        return sessionContext.fixSessionId;
     }
 }

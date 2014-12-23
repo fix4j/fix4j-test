@@ -32,4 +32,33 @@ public class FixSessionId {
     public String toString() {
         return beginString + ":" + senderCompId + "->" + targetCompId;
     }
+
+    /**
+     * @return A FixSessionId with sender and target compIDs switched.
+     */
+    public FixSessionId reverse(){
+        return new FixSessionId(beginString, targetCompId, senderCompId);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FixSessionId)) return false;
+
+        final FixSessionId that = (FixSessionId) o;
+
+        if (!beginString.equals(that.beginString)) return false;
+        if (!senderCompId.equals(that.senderCompId)) return false;
+        if (!targetCompId.equals(that.targetCompId)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = beginString.hashCode();
+        result = 31 * result + senderCompId.hashCode();
+        result = 31 * result + targetCompId.hashCode();
+        return result;
+    }
 }

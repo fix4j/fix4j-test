@@ -38,31 +38,17 @@ import java.util.Properties;
 public abstract class AbstractContextFactory implements ContextFactory {
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractContextFactory.class);
     private final FixSpecification fixSpecification;
-    private final ApplicationProperties properties;
 
-    public AbstractContextFactory () {
-        this((PropertySource) null);
-    }
-
-    public AbstractContextFactory (final Map<String, String> properties) {
-        this(new MapPropertySource(properties, "TEST"));
-    }
-
-    public AbstractContextFactory(final Properties properties) {
-        this(new MapPropertySource(properties, "TEST"));
-    }
-
-    public AbstractContextFactory(final PropertySource propertySource) {
-        this.fixSpecification = createFixSpecification();
-        this.properties = createApplicationProperties(propertySource);
+    public AbstractContextFactory (final FixSpecification fixSpecification) {
+        this.fixSpecification = fixSpecification;
     }
 
     protected abstract FixEngineSessionFactory createFixEngineSessionFactory(final FixSpecification fixSpecification, final ApplicationProperties properties);
-    protected abstract FixSpecification createFixSpecification();
 
     @Override
-    public TestContext createTestContext(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode) {
-        LOGGER.info(properties.toString());
+    public SessionContext createSessionContext(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode, final Map<String, String> sessionProperties) {
+        final ApplicationProperties properties = createApplicationProperties(sessionProperties != null? new MapPropertySource(sessionProperties, "SessionProperties"): null);
+        logProperties(fixSessionId, properties);
         final FixEngineSessionFactory fixEngineSessionFactory = createFixEngineSessionFactory(fixSpecification, properties);
         final BlockingPipe<FixMessage> inboundBlockingPipe = new BlockingPipe<>("fromThirdPartyFixEngine");
         final FixEngineSession fixEngineSession = fixEngineSessionFactory.createSession(fixSessionId, fixConnectionMode, inboundBlockingPipe);
@@ -70,17 +56,14 @@ public abstract class AbstractContextFactory implements ContextFactory {
         final OutboundProcessors outboundProcessors = new OutboundProcessors(fixEngineSession, createOutboundProcessors(properties));
         final SessionConnectors sessionConnectors = new SessionConnectors(inboundProcessors, outboundProcessors);
         final OnFailureReporters onFailReporters = new OnFailureReporters(inboundProcessors, outboundProcessors);
-        return new TestContext(sessionConnectors, fixSessionId, onFailReporters, fixConnectionMode, fixEngineSession, fixSpecification, properties);
+        return new SessionContext(sessionConnectors, fixSessionId, onFailReporters, fixConnectionMode, fixEngineSession, fixSpecification, properties);
     }
 
-    @Override
-    public FixSpecification getFixSpecification() {
-        return fixSpecification;
-    }
-
-    @Override
-    public ApplicationProperties getProperties() {
-        return properties;
+    private void logProperties(final FixSessionId fixSessionId, final ApplicationProperties properties) {
+        LOGGER.info("***********************************************************************************");
+        LOGGER.info("Properties for session: " + fixSessionId);
+        LOGGER.info("***********************************************************************************");
+        LOGGER.info("\n" + properties.toString());
     }
 
     /**
@@ -170,21 +153,30 @@ public abstract class AbstractContextFactory implements ContextFactory {
      *
      * If the test code wishes to receive heartbeat messages, there are two approaches:
      * 1. Configure fix4j.default.messages.to.ignore property to be blank. (zero length string).
-     * 2. Override this message matcher to return a matcher which does NOT match on heartbeats.  e.g. {@link org.fix4j.test.matching.matchers.MatchNoMessagesMatcher}
+     * 2. Override this method to return a matcher which does NOT match on heartbeats.  e.g. {@link org.fix4j.test.matching.matchers.MatchNoMessagesMatcher}
+     *
+     * Likewise if the test code wishes to broaden what is ignored, there are the same two approaches:
+     * 1. Configure fix4j.default.messages.to.ignore property to match more messages.  e.g. "35=/(D|A|X)/" will ignore all message types of either D, A or X.
+     * 2. Override this method to return a matcher which matches the desired messages.  e.g. implement your own {@link org.fix4j.test.matching.matchers.FixMessageMatcher}.
      *
      * @param fixSpecification
      * @param properties
-     * @return
      */
     protected FixMessageMatcher createMatcherForMessagesToIgnore(final FixSpecification fixSpecification, final ApplicationProperties properties) {
         final MessageExpressionParser parser = new MessageExpressionParser(fixSpecification);
         return parser.parse(properties.getAsString(PropertyKeysAndDefaultValues.DEFAULT_MESSAGES_TO_IGNORE.getKey()));
     }
 
+    /**
+     * Create a list of MessageFlagRules to be applied to each outbound FixMessage.
+     *
+     * If one or more rules are triggered, then the testcase will fail, and the test runner/author will be presented with the
+     * detail of each triggered rule.
+     */
     protected MessageFlagRules createOutboundMessageFlagFailureRules() {
         final List<MessageFlagRule> rules = new ArrayList<>();
         rules.addAll(MessageFlagRules.fieldsShouldNotBeSet(
-                "Field was explicitly set in message. Unless explicitly testing such functionality, this field should usually be left to the fix engine.",
+                "Field was explicitly set in message. Unless explicitly testing such functionality, this field should be left to the fix engine.",
                 fixSpecification.getFieldTypeByName("SenderCompID"),
                 fixSpecification.getFieldTypeByName("TargetCompID"),
                 fixSpecification.getFieldTypeByName("SendingTime"),
@@ -195,17 +187,50 @@ public abstract class AbstractContextFactory implements ContextFactory {
         return new MessageFlagRules(rules);
     }
 
+    /**
+     * Create a list of MessageFlagRules to be applied to each inbound FixMessage.
+     *
+     * If one or more rules are triggered, then the testcase will fail, and the test runner/author will be presented with the
+     * detail of each triggered rule.
+     *
+     * NOTE: for an inbound rule to trigger, the test case must either:
+     * --Be using a test session which automatically 'pushes' received messages into the test case.  (See {@link org.fix4j.test.session.DispatchingSession} or
+     *   {@link org.fix4j.test.session.ConsumerSession}
+     * --Or call a method on the test session which attempts to fetch the next method. e.g. {@link org.fix4j.test.session.MatchingSession#expect} or
+     *   {@link org.fix4j.test.session.BlockingSession#getNextMessage}
+     */
     protected MessageFlagRules createInboundMessageFlagFailureRules() {
         final List<MessageFlagRule> rules = new ArrayList<>();
         rules.add(new SessionLevelRejectMessageFlagRule(fixSpecification));
         return new MessageFlagRules(rules);
     }
 
+    /**
+     * Create a list of MessageFlagRules to be applied to each outbound FixMessage.
+     *
+     * If one or more rules are triggered, then the test case will proceed, the details of each triggered rule will be printed out to the fix4j-test log.
+     */
     protected MessageFlagRules createOutboundMessageFlagWarningRules() {
         return MessageFlagRules.EMPTY;
     }
 
+    /**
+     * Create a list of MessageFlagRules to be applied to each inbound FixMessage.
+     *
+     * If one or more rules are triggered, then the test case will proceed, the details of each triggered rule will be printed out to the fix4j-test log.
+     *
+     * NOTE: for an inbound rule to trigger, the test case must either:
+     * --Be using a test session which automatically 'pushes' received messages into the test case.  (See {@link org.fix4j.test.session.DispatchingSession} or
+     *   {@link org.fix4j.test.session.ConsumerSession}
+     * --Or call a method on the test session which attempts to fetch the next method. e.g. {@link org.fix4j.test.session.MatchingSession#expect} or
+     *   {@link org.fix4j.test.session.BlockingSession#getNextMessage}
+     */
     protected MessageFlagRules createInboundMessageFlagWarningRules() {
         return MessageFlagRules.EMPTY;
+    }
+
+    @Override
+    public final FixSpecification getFixSpecification() {
+        return fixSpecification;
     }
 }

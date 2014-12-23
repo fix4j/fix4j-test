@@ -62,7 +62,7 @@ public class CustomInboundProcessorWhichDropsAMessage {
         client.send(TestMessages.NEW_ORDER_SINGLE);
 
         //Send an MDR.  This should NOT be dropped
-        client.send(TestMessages.MARKET_DATA_REQUEST);
+        client.send(TestMessages.MARKET_DATA_REQUEST_1);
 
         //We expect that the first message to arrive at the server will be an MDR, as the order should have been dropped
         server.expect(MsgTypes.MarketDataRequest);

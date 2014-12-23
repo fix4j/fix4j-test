@@ -16,24 +16,13 @@ import java.util.Properties;
  * Time: 4:50 PM
  */
 public class DefaultContextFactory extends AbstractContextFactory {
-    public DefaultContextFactory(final Map<String, String> properties) {
-        super(properties);
-    }
 
     public DefaultContextFactory() {
-    }
-
-    public DefaultContextFactory(final Properties properties) {
-        super(properties);
+        super(FixSpec.INSTANCE);
     }
 
     @Override
-    protected FixEngineSessionFactory createFixEngineSessionFactory(final FixSpecification fixSpecification, final ApplicationProperties properties) {
-        return new QuickFixTestSessionFactory(fixSpecification, properties);
-    }
-
-    @Override
-    protected FixSpecification createFixSpecification() {
-        return FixSpec.INSTANCE;
+    protected FixEngineSessionFactory createFixEngineSessionFactory(final FixSpecification fixSpecification, final ApplicationProperties applicationProperties) {
+        return new QuickFixTestSessionFactory(fixSpecification, applicationProperties);
     }
 }

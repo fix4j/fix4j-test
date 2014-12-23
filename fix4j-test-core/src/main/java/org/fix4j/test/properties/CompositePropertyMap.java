@@ -75,9 +75,6 @@ public class CompositePropertyMap implements PropertySource, ApplicationProperti
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("\n**************************************\n");
-        sb.append("Properties\n");
-        sb.append("**************************************\n");
         for (final String key : properties.keySet()) {
             sb.append(key).append("=").append(properties.get(key)).append("\n");
         }

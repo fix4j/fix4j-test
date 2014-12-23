@@ -59,7 +59,7 @@ public class CustomOutboundProcessorWhichPopulatesAMessageField {
         server.discardUntil(MsgTypes.Logon);
 
         //Send a MarketDataRequest
-        client.send(TestMessages.MARKET_DATA_REQUEST);
+        client.send(TestMessages.MARKET_DATA_REQUEST_1);
 
         //Wait for it to arrive at the server
         final FixMessage mdr = server.discardUntil(MsgTypes.MarketDataRequest);

@@ -2,6 +2,7 @@ package org.fix4j.test.acceptance
 
 import org.fix4j.spec.fix50sp2.MsgTypes
 import org.fix4j.test.DefaultContextFactory
+import org.fix4j.test.TestMessages
 import org.fix4j.test.fixmodel.FixMessage
 import org.fix4j.test.session.*
 import org.fix4j.test.util.Consts
@@ -127,6 +128,33 @@ class OnFailureReportsTest extends Specification {
                     "RECENT OUTBOUND MESSAGES\n" +
                     "    1. ${marketDataRequest1.toDelimitedMessageWithDescriptors()}\n" +
                     "    2. ${newOrderSingle1.toDelimitedMessageWithDescriptors()}");
+    }
+
+    public void testSendingAFieldWhichShouldNotBePopulated(){
+        when:
+        client.discardUntil(MsgTypes.Logon);
+        server.discardUntil(MsgTypes.Logon);
+
+        client.send("[SenderCompID]49=CLIENT_COMP_ID|" +
+                    "[TargetCompID]56=SERVER_COMP_ID|" +
+                    "[MsgType]35=V[MARKETDATAREQUEST]|" +
+                    "[MDReqID]262=12345|" +
+                    "[SubscriptionRequestType]263=0[SNAPSHOT]|" +
+                    "[MarketDepth]264=20|" +
+                    "[NoMDEntryTypes]267=2|" +
+                    "[MDEntryType]269=0[BID]|" +
+                    "[MDEntryType]269=1[OFFER]|" +
+                    "[NoRelatedSym]146=3|" +
+                    "[Symbol]55=GBP/USD|" +
+                    "[Symbol]55=AUD/USD|" +
+                    "[Symbol]55=USD/JPY|");
+
+        then:
+        def e = thrown(AssertionError);
+        LOGGER.info(e.getMessage())
+        assertContainsBlockOfText(e.getMessage(),
+                "1.   [SenderCompID]49: Field was explicitly set in message. Unless explicitly testing such functionality, this field should be left to the fix engine.\n" +
+                "2.   [TargetCompID]56: Field was explicitly set in message. Unless explicitly testing such functionality, this field should be left to the fix engine.\n");
     }
 
     public void testRecentInboundMessages(){

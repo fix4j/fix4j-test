@@ -1,4 +1,4 @@
-package org.fix4j.test.examples.servers;
+package org.fix4j.test.examples.utils;
 
 import org.fix4j.test.DefaultContextFactory;
 import org.fix4j.test.session.BlockingSession;
@@ -9,9 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * User: ben
- * Date: 13/08/2014
- * Time: 8:57 PM
+ * This server just logs received messages.
  */
 public class TestServerToJustLogIncomingMessages implements Runnable {
     private final static Logger LOGGER = LoggerFactory.getLogger(TestServerToJustLogIncomingMessages.class);

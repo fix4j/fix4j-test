@@ -10,7 +10,7 @@ import org.fix4j.test.properties.ApplicationProperties;
  * Date: 25/11/14
  * Time: 5:27 PM
  */
-public class TestContext {
+public class SessionContext {
     public final SessionConnectors sessionConnectors;
     public final FixSessionId fixSessionId;
     public final OnFailureReporters onFailureReporters;
@@ -19,7 +19,7 @@ public class TestContext {
     public final FixSpecification fixSpecification;
     public final ApplicationProperties applicationProperties;
 
-    public TestContext(final SessionConnectors sessionConnectors, final FixSessionId fixSessionId, final OnFailureReporters onFailureReporters, final FixConnectionMode fixConnectionMode, final FixEngineSession fixEngineSession, final FixSpecification fixSpecification, final ApplicationProperties applicationProperties) {
+    public SessionContext(final SessionConnectors sessionConnectors, final FixSessionId fixSessionId, final OnFailureReporters onFailureReporters, final FixConnectionMode fixConnectionMode, final FixEngineSession fixEngineSession, final FixSpecification fixSpecification, final ApplicationProperties applicationProperties) {
         this.sessionConnectors = sessionConnectors;
         this.fixSessionId = fixSessionId;
         this.onFailureReporters = onFailureReporters;

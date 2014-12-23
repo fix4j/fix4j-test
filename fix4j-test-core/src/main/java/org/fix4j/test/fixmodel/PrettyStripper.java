@@ -18,11 +18,20 @@ public class PrettyStripper {
         //Strip space from start of string
         str = str.replaceAll("(?m)^\\s+", "");
 
+        //Strip space from start of field after delimiter
+        str = str.replaceAll("(?m)" + Consts.FIX_FIELD_DELIM + "\\s+", Consts.FIX_FIELD_DISPLAY_DELIM);
+
         //Strip space from end of string (not including carriage returns)
         str = str.replaceAll("(?m)[\\t ]+$", "");
 
+        //Strip space from end of field up to next delimiter
+        str = str.replaceAll("(?m)[\\t ]+" + Consts.FIX_FIELD_DELIM, Consts.FIX_FIELD_DISPLAY_DELIM);
+
         //Strip group repeat prefixes (lines starting with digits then a dot
         str = str.replaceAll("(?m)^\\d+\\.\\s*", "");
+
+        //Strip group repeat prefixes (fields starting with digits then a dot
+        str = str.replaceAll("(?m)" + Consts.FIX_FIELD_DELIM + "\\d+\\.\\s*", Consts.FIX_FIELD_DISPLAY_DELIM);
 
         //Strip line feeds
         str = str.replaceAll("\\r", "");

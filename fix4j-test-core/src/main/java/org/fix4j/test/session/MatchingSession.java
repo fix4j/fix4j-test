@@ -4,8 +4,7 @@ import org.fix4j.test.fixmodel.FixMessage;
 import org.fix4j.test.fixspec.FixSpecification;
 import org.fix4j.test.fixspec.MsgType;
 import org.fix4j.test.matching.MatchingInboundSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.fix4j.test.properties.ApplicationProperties;
 
 /**
  * MatchingSession allows the user to send messages, as well as specify criteria for asserting
@@ -16,12 +15,12 @@ import org.slf4j.LoggerFactory;
 public class MatchingSession implements TestClientSession {
     private final MatchingInboundSession inboundSession;
     private final SimpleOutboundSession outboundSession;
-    private final TestContext testContext;
+    private final SessionContext sessionContext;
 
-    public MatchingSession(final TestContext testContext) {
-        this.inboundSession = new MatchingInboundSession(testContext.fixSpecification, testContext.sessionConnectors.inboundSupplier, testContext.applicationProperties);
-        this.outboundSession = new SimpleOutboundSession(testContext.fixSpecification, testContext.sessionConnectors.outboundConsumer);
-        this.testContext = testContext;
+    public MatchingSession(final SessionContext sessionContext) {
+        this.inboundSession = new MatchingInboundSession(sessionContext.fixSpecification, sessionContext.sessionConnectors.inboundSupplier, sessionContext.applicationProperties);
+        this.outboundSession = new SimpleOutboundSession(sessionContext.fixSpecification, sessionContext.sessionConnectors.outboundConsumer);
+        this.sessionContext = sessionContext;
     }
 
     /**
@@ -32,7 +31,7 @@ public class MatchingSession implements TestClientSession {
         try {
             outboundSession.send(messageExpression);
         } catch (final Failure failure) {
-            throw testContext.enrichFailureWithAdditionalReports(failure);
+            throw sessionContext.enrichFailureWithAdditionalReports(failure);
         }
     }
 
@@ -40,7 +39,7 @@ public class MatchingSession implements TestClientSession {
         try {
             outboundSession.send(message);
         } catch (final Failure failure) {
-            throw testContext.enrichFailureWithAdditionalReports(failure);
+            throw sessionContext.enrichFailureWithAdditionalReports(failure);
         }
     }
 
@@ -55,7 +54,7 @@ public class MatchingSession implements TestClientSession {
         try {
             return inboundSession.expect(messageExpression).getMessage();
         } catch (final Failure failure) {
-            throw testContext.enrichFailureWithAdditionalReports(failure);
+            throw sessionContext.enrichFailureWithAdditionalReports(failure);
         }
     }
 
@@ -69,7 +68,7 @@ public class MatchingSession implements TestClientSession {
         try {
             return inboundSession.expect(msgType).getMessage();
         } catch (final Failure failure) {
-            throw testContext.enrichFailureWithAdditionalReports(failure);
+            throw sessionContext.enrichFailureWithAdditionalReports(failure);
         }
     }
 
@@ -86,7 +85,7 @@ public class MatchingSession implements TestClientSession {
         try {
             return inboundSession.discardUntilExpected(messageExpression).getMessage();
         } catch (final Failure failure) {
-            throw testContext.enrichFailureWithAdditionalReports(failure);
+            throw sessionContext.enrichFailureWithAdditionalReports(failure);
         }
     }
 
@@ -102,7 +101,7 @@ public class MatchingSession implements TestClientSession {
         try {
             return inboundSession.discardUntilTypeOfMessageReceived(msgType).getMessage();
         } catch (final Failure failure) {
-            throw testContext.enrichFailureWithAdditionalReports(failure);
+            throw sessionContext.enrichFailureWithAdditionalReports(failure);
         }
     }
 
@@ -121,22 +120,26 @@ public class MatchingSession implements TestClientSession {
         try {
             return inboundSession.discardUntilTypeOfMsgReceived(msgType, messageExpression).getMessage();
         } catch (final Failure failure) {
-            throw testContext.enrichFailureWithAdditionalReports(failure);
+            throw sessionContext.enrichFailureWithAdditionalReports(failure);
         }
     }
 
     @Override
     public void shutdown(){
-        testContext.fixEngineSession.shutdown();
+        sessionContext.fixEngineSession.shutdown();
     }
 
     @Override
     public FixSpecification getFixSpecification() {
-        return testContext.fixSpecification;
+        return sessionContext.fixSpecification;
     }
 
     @Override
     public FixSessionId getSessionId() {
-        return testContext.fixSessionId;
+        return sessionContext.fixSessionId;
+    }
+
+    public ApplicationProperties getProperties(){
+        return sessionContext.applicationProperties;
     }
 }

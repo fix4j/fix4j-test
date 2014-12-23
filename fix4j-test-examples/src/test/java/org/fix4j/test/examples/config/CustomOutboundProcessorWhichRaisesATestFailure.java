@@ -60,7 +60,7 @@ public class CustomOutboundProcessorWhichRaisesATestFailure {
         server.discardUntil(MsgTypes.Logon);
 
         //Send a MarketDataRequest
-        client.send(TestMessages.MARKET_DATA_REQUEST);
+        client.send(TestMessages.MARKET_DATA_REQUEST_1);
 
         //Wait for it to arrive at the server, all is good
         final FixMessage mdr = server.discardUntil(MsgTypes.MarketDataRequest);

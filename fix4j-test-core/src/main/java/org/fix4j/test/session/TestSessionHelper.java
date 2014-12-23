@@ -5,8 +5,11 @@ import org.fix4j.test.fixmodel.Handler;
 import org.fix4j.test.fixspec.FixSpecification;
 import org.fix4j.test.plumbing.Consumer;
 import org.fix4j.test.properties.ApplicationProperties;
+import org.fix4j.test.properties.PropertySource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * This is the main entry point into the fix4j-test framework.
@@ -39,10 +42,24 @@ public class TestSessionHelper {
      * @return A MatchingSession.
      */
     public MatchingSession createMatchingSession(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode) {
-        final TestContext testContext = contextFactory.createTestContext(fixSessionId, fixConnectionMode);
-        testContext.fixEngineSession.startup();
-        return new MatchingSession(testContext);
+        final SessionContext sessionContext = contextFactory.createSessionContext(fixSessionId, fixConnectionMode, null);
+        sessionContext.fixEngineSession.startup();
+        return new MatchingSession(sessionContext);
     }
+
+    /**
+     * @see org.fix4j.test.session.MatchingSession
+     * @param fixSessionId
+     * @param fixConnectionMode
+     * @param properties Properties specific to this session
+     * @return A MatchingSession.
+     */
+    public MatchingSession createMatchingSession(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode, final Map<String, String> properties ) {
+        final SessionContext sessionContext = contextFactory.createSessionContext(fixSessionId, fixConnectionMode, properties);
+        sessionContext.fixEngineSession.startup();
+        return new MatchingSession(sessionContext);
+    }
+
 
     /**
      * @see org.fix4j.test.session.DispatchingSession
@@ -52,9 +69,23 @@ public class TestSessionHelper {
      * @return A DispatchingSession.
      */
     public DispatchingSession createDispatchingSession(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode, final Handler messageHandler) {
-        final TestContext testContext = contextFactory.createTestContext(fixSessionId, fixConnectionMode);
-        testContext.fixEngineSession.startup();
-        return new DispatchingSession(testContext, messageHandler);
+        final SessionContext sessionContext = contextFactory.createSessionContext(fixSessionId, fixConnectionMode, null);
+        sessionContext.fixEngineSession.startup();
+        return new DispatchingSession(sessionContext, messageHandler);
+    }
+
+    /**
+     * @see org.fix4j.test.session.DispatchingSession
+     * @param fixSessionId
+     * @param fixConnectionMode
+     * @param properties Properties specific to this session
+     * @param messageHandler The message handler that will be called on each incoming message.
+     * @return A DispatchingSession.
+     */
+    public DispatchingSession createDispatchingSession(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode, final Map<String, String> properties, final Handler messageHandler) {
+        final SessionContext sessionContext = contextFactory.createSessionContext(fixSessionId, fixConnectionMode, properties);
+        sessionContext.fixEngineSession.startup();
+        return new DispatchingSession(sessionContext, messageHandler);
     }
 
     /**
@@ -65,9 +96,22 @@ public class TestSessionHelper {
      * @return A ConsumerSession.
      */
     public ConsumerSession createConsumerSession(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode, final Consumer<FixMessage> messageHandler) {
-        final TestContext testContext = contextFactory.createTestContext(fixSessionId, fixConnectionMode);
-        testContext.fixEngineSession.startup();
-        return new ConsumerSession(testContext, messageHandler);
+        final SessionContext sessionContext = contextFactory.createSessionContext(fixSessionId, fixConnectionMode, null);
+        sessionContext.fixEngineSession.startup();
+        return new ConsumerSession(sessionContext, messageHandler);
+    }
+
+    /**
+     * @see org.fix4j.test.session.ConsumerSession
+     * @param fixSessionId
+     * @param fixConnectionMode
+     * @param messageHandler The consumer that will be called on each incoming message.
+     * @return A ConsumerSession.
+     */
+    public ConsumerSession createConsumerSession(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode, final Map<String, String> properties, final Consumer<FixMessage> messageHandler) {
+        final SessionContext sessionContext = contextFactory.createSessionContext(fixSessionId, fixConnectionMode, properties);
+        sessionContext.fixEngineSession.startup();
+        return new ConsumerSession(sessionContext, messageHandler);
     }
 
     /**
@@ -77,17 +121,25 @@ public class TestSessionHelper {
      * @return A BlockingSession.
      */
     public BlockingSession createBlockingSession(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode) {
-        final TestContext testContext = contextFactory.createTestContext(fixSessionId, fixConnectionMode);
-        testContext.fixEngineSession.startup();
-        return new BlockingSession(testContext);
+        final SessionContext sessionContext = contextFactory.createSessionContext(fixSessionId, fixConnectionMode, null);
+        sessionContext.fixEngineSession.startup();
+        return new BlockingSession(sessionContext);
+    }
+
+    /**
+     * @see org.fix4j.test.session.BlockingSession
+     * @param fixSessionId
+     * @param fixConnectionMode
+     * @return A BlockingSession.
+     */
+    public BlockingSession createBlockingSession(final FixSessionId fixSessionId, final FixConnectionMode fixConnectionMode, final Map<String, String> properties) {
+        final SessionContext sessionContext = contextFactory.createSessionContext(fixSessionId, fixConnectionMode, properties);
+        sessionContext.fixEngineSession.startup();
+        return new BlockingSession(sessionContext);
     }
 
     public FixMessage parse(final String expression) {
         return contextFactory.getFixSpecification().parse(expression);
-    }
-
-    public ApplicationProperties getProperties(){
-        return contextFactory.getProperties();
     }
 
     public FixSpecification getFixSpecification(){

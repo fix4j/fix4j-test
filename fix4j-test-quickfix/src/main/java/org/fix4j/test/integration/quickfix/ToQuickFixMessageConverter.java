@@ -14,8 +14,6 @@ import quickfix.FieldMap;
 import quickfix.Group;
 import quickfix.Message;
 
-import java.util.List;
-
 /**
  * User: ben
  * Date: 14/08/2014
@@ -47,22 +45,26 @@ public class ToQuickFixMessageConverter implements MessageConverter<FixMessage, 
         return quickfixMessage;
     }
 
-    private <T extends FieldMap> void convertAndPopulateFieldMap(final T fieldMap, final FieldsAndGroups fieldsAndGroups){
+    private void convertAndPopulateFieldMap(final FieldMap fieldMap, final FieldsAndGroups fieldsAndGroups){
         for (final Field field : fieldsAndGroups.getFields()) {
             addFieldToQuickfixFieldMap(field, fieldMap);
         }
 
-        for (final org.fix4j.test.fixmodel.Group fixTestGroup : fieldsAndGroups.getGroups()) {
-            for (final FieldsAndGroups fixTestGroupRepeat : fixTestGroup.getRepeats()) {
-                final GroupType groupType = fixTestGroup.getType();
+        for (final org.fix4j.test.fixmodel.Group group : fieldsAndGroups.getGroups()) {
+            addGroupToQuickfixFieldMap(group, fieldMap);
+        }
+    }
 
-                final Group group = new Group(
-                        groupType.getNoOfFieldType().getTag().getValue(),
-                        groupType.getFirstChildTypeOfRepeatingGroup().getTag().getValue(),
-                        Utils.toIntArray(groupType.getFieldOrder()));
-                convertAndPopulateFieldMap(group, fixTestGroupRepeat);
-                fieldMap.addGroup(group);
-            }
+    private void addGroupToQuickfixFieldMap(final org.fix4j.test.fixmodel.Group fixTestGroup, final FieldMap fieldMap) {
+        for (final FieldsAndGroups fixTestGroupRepeat : fixTestGroup.getRepeats()) {
+            final GroupType groupType = fixTestGroup.getType();
+
+            final Group group = new Group(
+                    groupType.getNoOfFieldType().getTag().getValue(),
+                    groupType.getFirstChildTypeOfRepeatingGroup().getTag().getValue(),
+                    Utils.toIntArray(groupType.getFieldOrder()));
+            convertAndPopulateFieldMap(group, fixTestGroupRepeat);
+            fieldMap.addGroup(group);
         }
     }
 

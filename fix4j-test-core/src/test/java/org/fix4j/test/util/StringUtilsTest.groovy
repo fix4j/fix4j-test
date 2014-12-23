@@ -377,4 +377,36 @@ class StringUtilsTest extends Specification {
         assert StringUtils.getIndentEndingIn("").equals(Consts.INDENT);
         assert StringUtils.getIndentEndingIn("").length() == Consts.INDENT.length();
     }
+
+    def "test parseMap"() {
+        when:
+        final Map<String, String> properties = StringUtils.parseMap("keyone:one,keytwo:two,keythree:three");
+
+        then:
+        assert properties == [keyone:"one", keytwo:"two", keythree:"three"];
+    }
+
+    def "test parseMap with spaces"() {
+        when:
+        final Map<String, String> properties = StringUtils.parseMap("keyone:one, keytwo:two, keythree:three");
+
+        then:
+        assert properties == [keyone:"one", keytwo:"two", keythree:"three"];
+    }
+
+    def "test parseMap single property"() {
+        when:
+        final Map<String, String> properties = StringUtils.parseMap("keyone:one");
+
+        then:
+        assert properties == [keyone:"one"];
+    }
+
+    def "test listToMap"() {
+        when:
+        final Map<String, String> properties = StringUtils.listToMap("keyone", "one", "keytwo", "two", "keythree", "three");
+
+        then:
+        assert properties == [keyone:"one", keytwo:"two", keythree:"three"];
+    }
 }

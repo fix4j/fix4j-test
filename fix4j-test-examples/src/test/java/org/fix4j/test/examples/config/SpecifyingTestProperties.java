@@ -3,7 +3,12 @@ package org.fix4j.test.examples.config;
 import org.fix4j.test.DefaultContextFactory;
 import org.fix4j.test.integration.quickfix.QuickFixProperties;
 import org.fix4j.test.properties.PropertyKeysAndDefaultValues;
+import org.fix4j.test.properties.PropertyUtils;
 import org.fix4j.test.session.ContextFactory;
+import org.fix4j.test.session.DispatchingSession;
+import org.fix4j.test.session.FixConnectionMode;
+import org.fix4j.test.session.FixSessionId;
+import org.fix4j.test.session.MatchingSession;
 import org.fix4j.test.session.TestSessionHelper;
 import org.junit.Test;
 
@@ -33,8 +38,9 @@ public class SpecifyingTestProperties {
         System.setProperty(QuickFixProperties.RECONNECT_INTERVAL.getKey(), "11");
 
         final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory());
-        assertEquals("11111", helper.getProperties().getAsString(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS));
-        assertEquals("11", helper.getProperties().getAsString(QuickFixProperties.RECONNECT_INTERVAL));
+        final MatchingSession session = helper.createMatchingSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID_1", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR);
+        assertEquals("11111", session.getProperties().getAsString(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS));
+        assertEquals("11", session.getProperties().getAsString(QuickFixProperties.RECONNECT_INTERVAL));
     }
 
     @Test
@@ -43,9 +49,11 @@ public class SpecifyingTestProperties {
         properties.put(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS.getKey(), "22222");
         properties.put(QuickFixProperties.RECONNECT_INTERVAL.getKey(), "22");
 
-        final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory(properties));
-        assertEquals("22222", helper.getProperties().getAsString(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS));
-        assertEquals("22", helper.getProperties().getAsString(QuickFixProperties.RECONNECT_INTERVAL));
+        final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory());
+        final MatchingSession session = helper.createMatchingSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID_1", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR, properties);
+
+        assertEquals("22222", session.getProperties().getAsString(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS));
+        assertEquals("22", session.getProperties().getAsString(QuickFixProperties.RECONNECT_INTERVAL));
     }
 
     @Test
@@ -53,8 +61,10 @@ public class SpecifyingTestProperties {
         final Properties properties = new Properties();
         properties.load(this.getClass().getResourceAsStream("/foo.properties"));
 
-        final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory(properties));
-        assertEquals("33333", helper.getProperties().getAsString(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS));
-        assertEquals("33", helper.getProperties().getAsString(QuickFixProperties.RECONNECT_INTERVAL));
+        final TestSessionHelper helper = new TestSessionHelper(new DefaultContextFactory());
+        final MatchingSession session = helper.createMatchingSession(new FixSessionId("FIX.4.4", "CLIENT_COMP_ID_1", "SERVER_COMP_ID"), FixConnectionMode.INITIATOR, PropertyUtils.convertObjectMapToStringMap(properties));
+
+        assertEquals("33333", session.getProperties().getAsString(PropertyKeysAndDefaultValues.DEFAULT_FIX_MSG_WAIT_TIMEOUT_MS));
+        assertEquals("33", session.getProperties().getAsString(QuickFixProperties.RECONNECT_INTERVAL));
     }
 }
