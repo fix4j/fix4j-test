@@ -25,7 +25,7 @@ public enum FieldClass {
 
     /**
      * UTCTimestamp - representing Time/date combination represented in UTC (Universal Time Coordinated, also known
-     * as "GMT”) in either YYYYMMDD-HH:MM:SS (whole seconds) or YYYYMMDD-HH:MM:SS.sss (milliseconds) format, colons,
+     * as "GMT") in either YYYYMMDD-HH:MM:SS (whole seconds) or YYYYMMDD-HH:MM:SS.sss (milliseconds) format, colons,
      * dash, and period required. Valid values: * YYYY = 0000-9999, MM = 01-12, DD = 01-31, HH = 00-23, MM = 00-59,
      * SS = 00-60 (60 only if UTC leap second) (without milliseconds). * YYYY = 0000-9999, MM = 01-12, DD = 01-31,
      * HH = 00-23, MM = 00-59, SS = 00-60 (60 only if UTC leap second), sss=000-999 (indicating milliseconds).
@@ -44,7 +44,7 @@ public enum FieldClass {
     AMT("2000000"),
 
     /**
-     * LocalMktDate - represening a Date of Local Market (vs. UTC) in YYYYMMDD format. This is the "normal”
+     * LocalMktDate - represening a Date of Local Market (vs. UTC) in YYYYMMDD format. This is the "normal"
      * date field used by the FIX protocol. Valid values: YYYY = 0000-9999, MM = 01-12, DD = 01-31.
      */
     LOCALMKTDATE("20140727"),
@@ -61,7 +61,7 @@ public enum FieldClass {
     CHAR("a"),
 
     /**
-     * UTCDateOnly - Date represented in UTC (Universal Time Coordinated, also known as "GMT”)
+     * UTCDateOnly - Date represented in UTC (Universal Time Coordinated, also known as "GMT")
      * in YYYYMMDD format. This special-purpose field is paired with UTCTimeOnly to form a proper UTCTimestamp
      * for bandwidth-sensitive messages. Valid values: YYYY = 0000-9999, MM = 01-12, DD = 01-31.
      */
@@ -80,7 +80,7 @@ public enum FieldClass {
     /**
      * int - Sequence of digits without commas or decimals and optional sign character (ASCII characters "-"
      * and "0" - "9" ). The sign character utilizes one byte (i.e. positive int is "99999" while negative
-     * int is "-99999"). Note that int values may contain leading zeros (e.g. "00023” = "23”).
+     * int is "-99999"). Note that int values may contain leading zeros (e.g. "00023" = "23").
      * Examples: 723 in field 21 would be mapped int as |21=723|. -723 in field 12 would be mapped int as |12=-723|
      */
     INT("1234"),
@@ -90,8 +90,8 @@ public enum FieldClass {
      * and "."); the absence of the decimal point within the string will be interpreted as the float representation
      * of an integer value. All float fields must accommodate up to fifteen significant digits. The number of
      * decimal places used should be a factor of business/market needs and mutual agreement between counterparties.
-     * Note that float values may contain leading zeros (e.g. "00023.23” = "23.23”) and may contain or omit trailing
-     * zeros after the decimal point (e.g. "23.0” = "23.0000” = "23” = "23."). Note that fields which are derived
+     * Note that float values may contain leading zeros (e.g. "00023.23" = "23.23") and may contain or omit trailing
+     * zeros after the decimal point (e.g. "23.0" = "23.0000" = "23" = "23."). Note that fields which are derived
      * from float may contain negative values unless explicitly specified otherwise.
      */
     FLOAT("1234.1234"),
@@ -104,7 +104,7 @@ public enum FieldClass {
     MONTHYEAR("201407"),
 
     /**
-     * Qty - value capable of storing either a whole number (no decimal places) of "shares” (securities denominated
+     * Qty - value capable of storing either a whole number (no decimal places) of "shares" (securities denominated
      * in whole units) or a decimal value containing decimal places for non-share quantity asset classes (securities
      * denominated in fractional units).
      */
