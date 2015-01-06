@@ -11,6 +11,16 @@
 
     <artifactId>fix4j-test-core</artifactId>
 
+    <build>
+        <!-- Mandatory plugins for using Spock, is configured via the pluginManagement tag in the parent pommvn  -->
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.fix4j</groupId>
