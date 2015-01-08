@@ -18,6 +18,7 @@
         <module>fix4j-test-all</module>
         <module>fix4j-test-testcommon</module>
         <module>fix4j-test-integration</module>
+        <module>fix4j-test-gui</module>
     </modules>
 
     <properties>

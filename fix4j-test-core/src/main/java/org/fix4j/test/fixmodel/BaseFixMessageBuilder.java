@@ -69,7 +69,7 @@ public class BaseFixMessageBuilder {
                 return msgTypeByTag;
             }
         }
-        throw new IllegalArgumentException("Could not find MsgType[tag=" + fixSpecification.getMsgTypeTagNumber() + "] in fields:" + fields);
+        throw new IllegalArgumentException("MsgType[tag=" + fixSpecification.getMsgTypeTagNumber() + "] not found.  This field is mandatory when defining a message.  Fields provided:" + fields);
     }
 
     private Group buildGroup(final PeekableIterator<Field> iterator){

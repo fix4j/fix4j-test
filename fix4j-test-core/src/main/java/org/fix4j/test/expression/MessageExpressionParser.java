@@ -57,7 +57,9 @@ public class MessageExpressionParser {
 
     public Field parseField(final String fieldStr) {
         final String[] fixFieldParts = fieldStr.split(Consts.FIX_FIELD_EQUALS);
-        if(fixFieldParts.length != 2){
+        if(fixFieldParts.length > 2) {
+            throw new IllegalArgumentException("It appears that a valid delimiter was not used to separate fix fields.  Valid separators are defined by the regular expression: '" + Consts.FIX_FIELD_DELIM + "'");
+        } else if(fixFieldParts.length < 2){
             throw new IllegalArgumentException("Fix field expression does not match '<tag>" + Consts.FIX_FIELD_EQUALS + "<value>' format. Field: '" + fieldStr);
         }
         final String fieldTypeStr = fixFieldParts[0];
@@ -161,6 +163,7 @@ public class MessageExpressionParser {
             final String tagText = matcher.group(1);
             final FieldType fieldTypeByName = fixSpecification.getFieldTypeByName(tagText);
             if(fieldTypeByName != null) return fieldTypeByName;
+            else throw new IllegalArgumentException("Could not find tag in specification of type:" + fieldTypeStr);
         }
 
         throw new IllegalArgumentException("Cannot parse field type:" + fieldTypeStr);
